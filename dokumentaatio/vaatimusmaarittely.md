@@ -11,7 +11,8 @@ Sovellus toimii kitaran virittäjänä, joka analysoi mikrofonin kautta vastaano
     * Taajuuden
     * Nuotin kirjaimen
     * kuinka lähellä ääni on ihanteellisesta vireydestä
-* Apuna viritykseen lista yleisimmistä kielenvireyksistä
+* "Äänirauta" jolla pystyy soittamaan kaiuttimesta halutun taajuuden
+* Apuna viritykseen lista yleisimmistä kielenvireyksistä (tietokanta)
   * Perusvire E-A-D-G-B-E
   * Drop-D    D-A-D-G-B-E
   * D viritys D-G-C-F-A-D
