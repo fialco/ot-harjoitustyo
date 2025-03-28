@@ -8,6 +8,7 @@ authors = [
 readme = "README.md"
 requires-python = "^3.10"
 dependencies = [
+    "invoke (>=2.2.0,<3.0.0)"
 ]
 
 
@@ -18,4 +19,5 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
 coverage = "^7.7.1"
+pylint = "^3.3.6"
 
