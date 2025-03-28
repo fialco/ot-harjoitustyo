@@ -4,4 +4,5 @@
 | :----:|:-----| :-----|
 | 25.3.2025 | 1    | ohjelman ideointi |
 |           | 1    | vaatimusmäärittely ja tuntikirjanpito |
-| yht   | 2   | | 
+| 28.3.2025 | 1    | ohjelman, hakemistojen ja työvälineiden alustus |
+| yht       | 3    | | 
