@@ -9,7 +9,7 @@ Kurssin harjoitustyönä on **graaffisella käyttöliittymällä** varustettu *T
 
 ## Python ja poetry versioista
 Ohjelma testattu sekä fuksiläppärillä jossa Python 3.12.3 ja poetry 2.1.2,
-että virtuaaliympäristössä jossa Python 3.12.3 ja poetry 2.1.2.
+että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 
 ## Asennus
 
