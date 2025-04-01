@@ -1,5 +1,14 @@
+from tkinterdnd2 import TkinterDnD
+from ui.ui import UI
+
+
 def main():
-    print('Invoke test')
+    window = TkinterDnD.Tk()
+    window.title("Tier list Application")
+    UI(window)
+
+    window.mainloop()
+
 
 if __name__ == "__main__":
     main()
