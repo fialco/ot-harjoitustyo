@@ -5,7 +5,8 @@ from ui.ui import UI
 def main():
     window = TkinterDnD.Tk()
     window.title("Tier list Application")
-    UI(window)
+    ui_view = UI(window)
+    ui_view.start()
 
     window.mainloop()
 
