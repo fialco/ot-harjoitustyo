@@ -10,4 +10,6 @@
 | 1.4.2025       |   5  | Käyttöliittymä ja kuvien lisäys ominaisuus, dokumentit |
 | 7.4.2025       |   3  | Käyttöliittymän laajennus, tietokannan valmistelu |
 | 8.4.2025       |   1  | Käyttöliittymän laajennus |
-| yht       | 16    | |
+|        |   5  | Tietokannan käyttöönotto ja rakenteen refaktorointi |
+|        |   1  | Dokumentaation lisäys ja päivitys |
+| yht       | 23    | |

@@ -28,7 +28,7 @@ class TierListService:
         self.image_repository = image_repository
 
     def get_tier_lists(self):
-        return self.tier_list_repository.find_all()
+        return self.tier_list_repository.find_all_tier_lists()
 
     def get_tier_list(self, tierlist_id):
         return self.tier_list_repository.find_tier_list(tierlist_id)

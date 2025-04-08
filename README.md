@@ -6,6 +6,7 @@ Kurssin harjoitustyönä on **graaffisella käyttöliittymällä** varustettu *T
 * [Vaatimusmäärittely](/tier-list-app/dokumentaatio/vaatimusmaarittely.md)
 * [Tuntikirjanpito](/tier-list-app/dokumentaatio/tuntikirjanpito.md)
 * [Changelog](/tier-list-app/dokumentaatio/changelog.md)
+* [Arkkitehtuurikuvaus](/tier-list-app/dokumentaatio/arkkitehtuuri.md)
 
 ## Python ja poetry versioista
 Ohjelma testattu sekä fuksiläppärillä jossa Python 3.12.3 ja poetry 2.1.2,
@@ -13,13 +14,21 @@ että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 
 ## Asennus
 
+ <b>HUOM! Kaikki asennuksen komennot ajetaan tier-list-app hakemistossa.</b>
+
 1. Siirry tier-list-app hakemistoon ja asenna riippuvuudet komennolla:
 
 ```bash
 poetry install
 ```
 
-2. Käynnistä sovellus komennolla (edelleen tier-list-app hakemistossa):
+2. Suorita alustavat toimenpiteet komennolla:
+
+```bash
+poetry run invoke build
+```
+
+3. Käynnistä sovellus komennolla:
 
 ```bash
 poetry run invoke start
