@@ -19,13 +19,15 @@ että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 poetry install
 ```
 
-2. Käynnistä sovellus komennolla:
+2. Käynnistä sovellus komennolla (edelleen tier-list-app hakemistossa):
 
 ```bash
 poetry run invoke start
 ```
 
 ## Komentorivitoiminnot
+
+ <b>HUOM! Kaikki komennot ajetaan tier-list-app hakemistossa.</b>
 
 ### Testaus
 
