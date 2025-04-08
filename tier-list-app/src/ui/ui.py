@@ -16,12 +16,13 @@ class UI:
 
         self._current_view = None
 
-    def _show_tier_list_view(self):
+    def _show_tier_list_view(self, tierlist_id=None):
         self._hide_current_view()
 
         self._current_view = TierListView(
             self._root,
-            self._show_list_view
+            self._show_list_view,
+            tierlist_id
         )
 
         self._current_view.pack()
@@ -31,7 +32,7 @@ class UI:
 
         self._current_view = ListView(
             self._root,
-            self._show_tier_list_view
+            self._show_tier_list_view,
         )
 
         self._current_view.pack()

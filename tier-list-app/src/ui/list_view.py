@@ -1,21 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
-from services.item_service import ItemService
+
+from services.tier_list_service import TierListService
 
 
 class ListView:
     def __init__(self, root, handle_show_tier_list_view):
         self._root = root
-        self._service = ItemService()
+        self._service = TierListService()
 
         self._handle_show_tier_list_view = handle_show_tier_list_view
 
-        self.list = ['Programming Languages',
-                     'Linux Distros',
-                     'TV-series',
-                     'Albums',
-                     'Movies',
-                     'Games']
+        self.list = self._service.get_tier_lists()
 
         self.frame = tk.Frame(self._root)
         self.frame.pack(fill=tk.BOTH, expand=True)
@@ -34,23 +30,27 @@ class ListView:
         """Destory view."""
         self.frame.destroy()
 
-    def on_button_click(self, name):
-        # Button testing
-        print(f"Chose tier list: {name}")
-        self._handle_show_tier_list_view()
+    def on_button_click(self, tier_list):
+        self._handle_show_tier_list_view(tier_list.id)
 
     def _draw_list(self):
         """Draw list of different tier lists."""
+
+        if len(self.list) == 0:
+            self._canvas.create_text(0, 0,  anchor='n', text="List empty, please run 'poetry run invoke build'.",
+                                     font=('Arial', 25, 'bold'))
 
         for i in range(len(self.list)):
             y_position = i * 50
             self._canvas.create_rectangle(0, y_position-25, 800, y_position + 25,
                                           outline='black', width=2, fill='azure')
 
-            self._canvas.create_text(5,  y_position, anchor='w', text=f"{self.list[i]}",
+            self._canvas.create_text(5,  y_position, anchor='w', text=f"{self.list[i].name}",
                                      font=('Arial', 25, 'bold'))
 
-            button = self._canvas.create_text(750, y_position, text="Choose")
+            button = self._canvas.create_text(
+                750, y_position, text="Choose", font=('Arial', 15, 'bold'), fill='blue')
+
             self._canvas.tag_bind(
                 button, '<Button-1>', lambda e, i=i: self.on_button_click(self.list[i]))
 
