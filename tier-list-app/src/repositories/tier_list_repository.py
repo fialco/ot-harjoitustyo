@@ -15,7 +15,7 @@ class TierListRepository:
     def __init__(self, connection):
         self._connection = connection
 
-    def find_all(self):
+    def find_all_tier_lists(self):
         cursor = self._connection.cursor()
 
         cursor.execute("SELECT * FROM tierlists")
@@ -28,7 +28,7 @@ class TierListRepository:
         cursor = self._connection.cursor()
 
         cursor.execute(
-            "SELECT id, name FROM tierlists WHERE id = ?", (tierlist_id))
+            "SELECT id, name FROM tierlists WHERE id = ?", (tierlist_id,))
 
         row = cursor.fetchone()
 
@@ -43,6 +43,47 @@ class TierListRepository:
         rows = cursor.fetchall()
 
         return list(map(get_items_by_row, rows))
+
+    #These are used only for testing for now until functionality added properly to app
+    def delete_tier_lists(self):
+        cursor = self._connection.cursor()
+
+        cursor.execute("DELETE FROM tierlists")
+
+        self._connection.commit()
+
+    def delete_items(self):
+        cursor = self._connection.cursor()
+
+        cursor.execute("DELETE FROM items")
+
+        self._connection.commit()
+
+    def create_tier_list(self, tierlist):
+        cursor = self._connection.cursor()
+
+        cursor.execute(
+            "insert into tierlists (name) values (?)",
+            (tierlist.name,)
+        )
+
+        self._connection.commit()
+
+        return tierlist
+
+    def create_item(self, item):
+        cursor = self._connection.cursor()
+
+        cursor.execute(
+            "insert into items (name, image_path, tierlist_id) values (?, ?, ?)",
+            (item.name,
+            item.image_path,
+            item.tierlist_id,)
+        )
+
+        self._connection.commit()
+
+        return item
 
 
 tier_list_repository = TierListRepository(get_database_connection())

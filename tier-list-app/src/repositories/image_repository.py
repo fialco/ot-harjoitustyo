@@ -1,5 +1,5 @@
-from PIL import Image, ImageTk
 import os
+from PIL import Image, ImageTk
 
 
 class ImageRepository:

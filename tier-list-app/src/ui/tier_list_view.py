@@ -186,8 +186,8 @@ class TierListView:
 
 
 """These classes were originally in services and entities
-but moved here because these only handle item moving in UI
-for now. Will probably be replaced by more elegant system."""
+but moved here because these only handle item moving in UI.
+Will probably be replaced by more elegant system."""
 
 
 class ItemHandler:
