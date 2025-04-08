@@ -1,5 +1,6 @@
 from PIL import Image, ImageTk
 
+
 class ImageRepository:
     @staticmethod
     def load_image(file_path):

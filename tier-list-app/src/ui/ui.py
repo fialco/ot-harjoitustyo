@@ -8,7 +8,7 @@ class UI:
         self._current_view = None
 
     def start(self):
-        self._show_tier_list_view()
+        self._show_list_view()
 
     def _hide_current_view(self):
         if self._current_view:
@@ -35,4 +35,3 @@ class UI:
         )
 
         self._current_view.pack()
-

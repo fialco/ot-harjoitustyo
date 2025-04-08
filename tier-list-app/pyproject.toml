@@ -10,7 +10,8 @@ requires-python = "^3.10"
 dependencies = [
     "invoke (>=2.2.0,<3.0.0)",
     "tkinterdnd2 (>=0.4.3,<0.5.0)",
-    "pillow (>=11.2.0,<12.0.0)"
+    "pillow (>=11.2.0,<12.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)"
 ]
 
 
@@ -22,4 +23,5 @@ build-backend = "poetry.core.masonry.api"
 pytest = "^8.3.5"
 coverage = "^7.7.1"
 pylint = "^3.3.6"
+autopep8 = "^2.3.2"
 

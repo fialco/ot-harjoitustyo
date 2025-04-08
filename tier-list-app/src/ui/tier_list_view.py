@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from services.item_service import ItemService
 
+
 class TierListView:
     def __init__(self, root, handle_show_list_view):
         self._root = root
@@ -31,22 +32,22 @@ class TierListView:
 
         self._create_drag_drop_area()
 
-
     def pack(self):
-        """"Näyttää näkymän."""
+        """Show view."""
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
     def destroy(self):
-        """"Tuhoaa näkymän."""
+        """Destory view."""
         self.canvas.destroy()
 
     def _draw_tiers(self):
         """Draw the tiers on the canvas."""
 
-        #Adds the amount of tiers given
+        # Adds the amount of tiers given
         for i, tier in enumerate(self.tiers):
             self.canvas.create_rectangle(0, self.tier_positions[i] - self.tier_height // 2,
-                                         800, self.tier_positions[i] + self.tier_height // 2,
+                                         800, self.tier_positions[i] +
+                                         self.tier_height // 2,
                                          outline='black', width=2, fill='azure')
 
             self.canvas.create_text(10, self.tier_positions[i], anchor='w', text=f"[{tier}]",
@@ -71,7 +72,7 @@ class TierListView:
         self.dnd_area.place(x=400, y=700, anchor='n')
 
         self.drop_label = tk.Label(self.dnd_area, text='Drag image here',
-                                  width=20, height=3, bg='green')
+                                   width=20, height=3, bg='green')
 
         self.drop_label.grid(row=0, column=0)
 
@@ -96,7 +97,7 @@ class TierListView:
             text="Back",
             command=self._handle_show_list_view
         )
-        logout_button.place(x=0,y=0)
+        logout_button.place(x=0, y=0)
 
     def _on_drop(self, event):
         """Handle the event when an item is dropped."""
@@ -116,7 +117,8 @@ class TierListView:
         self._item_map[item_id] = image_item
 
         # Bind drag movement event
-        self.canvas.tag_bind(item_id, '<B1-Motion>', lambda e, id=item_id: self._on_drag(e, id))
+        self.canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
+                             id=item_id: self._on_drag(e, id))
         self.canvas.tag_bind(item_id, '<ButtonRelease-1>', self._on_drop_item)
 
     def _on_drag(self, event, item_id):
@@ -125,14 +127,15 @@ class TierListView:
 
     def _on_drop_item(self, event):
         """Snap the item to the closest tier."""
-        #From https://stackoverflow.com/a/7604311
+        # From https://stackoverflow.com/a/7604311
         item_id = self.canvas.find_withtag("current")[0]
 
         # Retrieve the image_item
         item = self._item_map.get(item_id)
 
         # Find the closest tier to the current Y position
-        snapped_item = self._service.snap_item_to_tier(item, self.tier_positions, event.y)
+        snapped_item = self._service.snap_item_to_tier(
+            item, self.tier_positions, event.y)
 
         # Update the item position
         self.canvas.coords(item_id, event.x, snapped_item.y)

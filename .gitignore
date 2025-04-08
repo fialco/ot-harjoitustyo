@@ -1,4 +1,11 @@
-.pytest_cache
-__pycache__
+.DS_Store
 .coverage
+.pytest_cache
 htmlcov
+__pycache__
+*.py[cod]
+*$py.class
+
+# data file(s)
+data/database.sqlite
+
