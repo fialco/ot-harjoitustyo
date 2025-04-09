@@ -22,13 +22,15 @@ että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 poetry install
 ```
 
-2. Suorita alustavat toimenpiteet komennolla:
+2. Uudelleennimeä <b>.env.template .env</b> tiedostoksi ja <b>.env.test.template .env.test</b> tiedostoksi
+
+3. Suorita alustavat toimenpiteet komennolla:
 
 ```bash
 poetry run invoke build
 ```
 
-3. Käynnistä sovellus komennolla:
+4. Käynnistä sovellus komennolla:
 
 ```bash
 poetry run invoke start

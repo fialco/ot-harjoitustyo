@@ -5,6 +5,8 @@ htmlcov
 __pycache__
 *.py[cod]
 *$py.class
+.env
+.env.test
 
 # data file(s)
 data/database.sqlite
