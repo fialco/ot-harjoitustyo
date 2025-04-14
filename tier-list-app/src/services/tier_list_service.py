@@ -36,6 +36,9 @@ class TierListService:
     def get_items_of_tier_list(self, tierlist_id):
         return self.tier_list_repository.find_items_by_tier_list(tierlist_id)
 
+    def get_tiers_of_tier_list(self, tierlist_id):
+        return self.tier_list_repository.find_tiers_by_tier_list(tierlist_id)
+
     def get_base_dir_path(self):
         return self.image_repository.get_base_dir_path()
 

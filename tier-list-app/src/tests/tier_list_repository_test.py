@@ -3,6 +3,7 @@ from repositories.tier_list_repository import tier_list_repository
 from entities.tier_list import TierList
 from entities.item import Item
 
+
 class TestTierListRepository(unittest.TestCase):
     def setUp(self):
         tier_list_repository.delete_tier_lists()
@@ -11,8 +12,8 @@ class TestTierListRepository(unittest.TestCase):
         self.tier_list_music = TierList(1, 'Music genres')
         self.tier_list_tv = TierList(2, 'TV-shows')
 
-        self.item_rock = Item('Rock', 'rock.png', 1)
-        self.item_pop = Item('Pop', 'pop.png', 1)
+        self.item_rock = Item(1, 'rock.png')
+        self.item_pop = Item(1, 'pop.png')
 
     def test_create(self):
         tier_list_repository.create_tier_list(self.tier_list_music)
@@ -28,7 +29,6 @@ class TestTierListRepository(unittest.TestCase):
         tier_list = tier_list_repository.find_tier_list(1)
 
         self.assertEqual(tier_list.name, self.tier_list_music.name)
-
 
     def test_find_all_tier_lists(self):
         tier_list_repository.create_tier_list(self.tier_list_music)
@@ -48,5 +48,5 @@ class TestTierListRepository(unittest.TestCase):
         items = tier_list_repository.find_items_by_tier_list(1)
 
         self.assertEqual(len(items), 2)
-        self.assertEqual(items[0].name, self.item_rock.name)
-        self.assertEqual(items[1].name, self.item_pop.name)
+        self.assertEqual(items[0].image_path, self.item_rock.image_path)
+        self.assertEqual(items[1].image_path, self.item_pop.image_path)

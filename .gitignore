@@ -9,5 +9,6 @@ __pycache__
 .env.test
 
 # data file(s)
-data/database.sqlite
+tier-list-app/data/database.sqlite
+tier-list-app/data/test-database.sqlite
 

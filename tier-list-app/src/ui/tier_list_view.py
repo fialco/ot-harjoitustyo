@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, simpledialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 
 from services.tier_list_service import TierListService
@@ -18,17 +18,16 @@ class TierListView:
 
         self._tierlist_id = tierlist_id
 
+        self.frame = tk.Frame(self._root)
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
         # Canvas for items and tiers
-        self._canvas = tk.Canvas(root, bg="snow2", height=800, width=800)
-        self._canvas.pack(fill=tk.BOTH, expand=True)
+        self._canvas = tk.Canvas(self.frame, bg="snow2", height=900, width=800)
+        self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        self._create_back_button()
-
-        # Tiers defined by labels
-        # Hard coded for now
-        self.tiers = ['S', 'A', 'B', 'C', 'D']
-        self.tier_positions = [100, 200, 300, 400, 500, 600]
         self.tier_height = 100
+
+        self._init_tier_list_data()
 
         # Draw tiers on the canvas
         self._draw_tiers()
@@ -41,30 +40,78 @@ class TierListView:
 
         self._draw_items()
 
+        self._create_back_button()
+        self._create_create_button()
+
+        scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Config canvast to use the scrollbar
+        self._canvas.config(yscrollcommand=scrollbar.set)
+
+        self._canvas.config(scrollregion=self._canvas.bbox("all"))
+
     def pack(self):
         """Show view."""
-        self._canvas.pack(fill=tk.BOTH, expand=True)
+        self.frame.pack(fill=tk.BOTH, expand=True)
 
     def destroy(self):
         """Destory view."""
-        self._canvas.destroy()
+        self.frame.destroy()
+
+    def tier_list_name_input(self):
+        name = simpledialog.askstring(
+            title="Tier list name", prompt="Name the tier list:", parent=self._root)
+        self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
+
+        self._tier_list_name = name
+
+
+    def _init_tier_list_data(self):
+        self._tier_list_name = 'Click here to name the tier list'
+
+        self._tiers = {0:'S', 1:'A', 2:'B', 3:'C', 4:'D'}
+
+        if self._tierlist_id:
+            tier_list = self._tier_list_service.get_tier_list(
+                self._tierlist_id)
+            self._tier_list_name = tier_list.name
+
+            tier_data = self._tier_list_service.get_tiers_of_tier_list(
+                self._tierlist_id)
+
+            self._tiers = {}
+            for tier in tier_data:
+                self._tiers[tier.rank] = tier.name
+
+        self.tier_positions = [(i+1)*100 for i in range(len(self._tiers))]
+        self.tier_positions.append((len(self._tiers)+1)*100)
+        self._tier_count = (len(self._tiers)+1)*100
 
     def _draw_tiers(self):
         """Draw the tiers on the canvas."""
+        self._canvas.create_rectangle(0, 0, 800, 75,
+                                      outline='black', width=2, fill='SpringGreen2')
+
+        self.canvas_tier_list_name = self._canvas.create_text(
+            400, 25, text=f"{self._tier_list_name}", font=('Arial', 25, 'bold'), fill='blue')
+
+        self._canvas.tag_bind(
+            self.canvas_tier_list_name, '<Button-1>', lambda e: self.tier_list_name_input())
 
         # Adds the amount of tiers given
-        for i, tier in enumerate(self.tiers):
-            self._canvas.create_rectangle(0, self.tier_positions[i] - self.tier_height // 2,
-                                          800, self.tier_positions[i] +
+        for rank, tier in self._tiers.items():
+            self._canvas.create_rectangle(0, self.tier_positions[rank] - self.tier_height // 2,
+                                          800, self.tier_positions[rank] +
                                           self.tier_height // 2,
                                           outline='black', width=2, fill='azure')
 
-            self._canvas.create_text(10, self.tier_positions[i], anchor='w', text=f"[{tier}]",
+            self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"[{tier}]",
                                      font=('Arial', 35, 'bold'))
 
         # Add container for unpicked items
-        self._canvas.create_rectangle(0, 600 - self.tier_height // 2,
-                                      800, 600 +
+        self._canvas.create_rectangle(0, self._tier_count - self.tier_height // 2,
+                                      800, self._tier_count +
                                       self.tier_height // 2,
                                       outline='black', width=2, fill='gray80')
 
@@ -76,7 +123,7 @@ class TierListView:
 
         for i, item in enumerate(items):
             # Position where the items will be placed
-            x, y = (i + 1) * 120, 600
+            x, y = (i + 1) * 120, self._tier_count
 
             image_path = base_dir + item.image_path
 
@@ -104,44 +151,50 @@ class TierListView:
     def _on_leave(self, event):
         self.drop_label.config(bg='green')
 
-    def _on_drag_hover(self, event):
-        self.drop_label.config(bg='yellow')
-
-    def _on_drag_leave(self, event):
-        self.drop_label.config(bg='green')
-
     def _create_drag_drop_area(self):
-        """Create the drag and drop functionality for images."""
-        self.dnd_area = ttk.Frame(self._root)
-        self.dnd_area.place(x=400, y=700, anchor='n')
+        """Create the drag and drop functionality for images.
+        Created for new templates."""
 
-        self.drop_label = tk.Label(self.dnd_area, text='Drag image here',
-                                   width=20, height=3, bg='green')
+        if not self._tierlist_id:
+            self.dnd_area = ttk.Frame(self._root)
+            self.dnd_area.place(x=400, y=700, anchor='n')
 
-        self.drop_label.grid(row=0, column=0)
+            self.drop_label = tk.Label(self.dnd_area, text='Drag image here',
+                                    width=20, height=3, bg='green')
 
-        # Register the drop area for drag and drop
-        self.dnd_area.drop_target_register(DND_FILES)
-        self.dnd_area.dnd_bind('<<Drop>>', self._on_drop)
+            self.drop_label.grid(row=0, column=0)
 
-        self.drop_label.bind('<Enter>', self._on_hover)
-        self.drop_label.bind('<Leave>', self._on_leave)
+            # Register the drop area for drag and drop
+            self.dnd_area.drop_target_register(DND_FILES)
+            self.dnd_area.dnd_bind('<<Drop>>', self._on_drop)
 
-        self.dnd_area.dnd_bind('<<DropEnter>>', self._on_drag_hover)
-        self.dnd_area.dnd_bind('<<DropLeave>>', self._on_drag_leave)
+            self.drop_label.bind('<Enter>', self._on_hover)
+            self.drop_label.bind('<Leave>', self._on_leave)
 
-        self._canvas.create_text(260, 775, anchor='w', text='Most of the image formats supported',
-                                 font=('Arial', 12, 'bold'))
+            self.dnd_area.dnd_bind('<<DropEnter>>', self._on_hover)
+            self.dnd_area.dnd_bind('<<DropLeave>>', self._on_leave)
+
+            self._canvas.create_text(260, 775, anchor='w', text='Most of the image formats supported',
+                                    font=('Arial', 12, 'bold'))
 
     def _create_back_button(self):
         """Create back button to lists."""
 
-        logout_button = ttk.Button(
-            master=self._canvas,
-            text="Back",
-            command=self._handle_show_list_view
-        )
-        logout_button.place(x=0, y=0)
+        back = self._canvas.create_text(
+            0, self._tier_count + 100, anchor='w', text="Back", font=('Arial', 20, 'bold'), fill='blue')
+
+        self._canvas.tag_bind(
+            back, '<Button-1>', lambda e: self._handle_show_list_view())
+
+
+    def _create_create_button(self):
+        """Create back button to lists."""
+
+        create = self._canvas.create_text(
+            0, self._tier_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
+
+        self._canvas.tag_bind(
+            create, '<Button-1>', lambda e: self._handle_show_list_view())
 
     def _on_drop(self, event):
         """Handle the event when an item is dropped."""
@@ -167,10 +220,16 @@ class TierListView:
 
     def _on_drag(self, event, item_id):
         """Move the item as the mouse moves."""
-        self._canvas.coords(item_id, event.x, event.y)
+        x = self._canvas.canvasx(event.x)
+        y = self._canvas.canvasy(event.y)
+
+        self._canvas.coords(item_id, x, y)
 
     def _on_drop_item(self, event):
         """Snap the item to the closest tier."""
+        x = self._canvas.canvasx(event.x)
+        y = self._canvas.canvasy(event.y)
+
         # From https://stackoverflow.com/a/7604311
         item_id = self._canvas.find_withtag("current")[0]
 
@@ -179,10 +238,10 @@ class TierListView:
 
         # Find the closest tier to the current Y position
         snapped_item = self._service.snap_item_to_tier(
-            item, self.tier_positions, event.y)
+            item, self.tier_positions, y)
 
         # Update the item position
-        self._canvas.coords(item_id, event.x, snapped_item.y)
+        self._canvas.coords(item_id, x, snapped_item.y)
 
 
 """These classes were originally in services and entities

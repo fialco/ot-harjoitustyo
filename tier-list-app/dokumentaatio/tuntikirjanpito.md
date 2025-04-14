@@ -12,4 +12,6 @@
 | 8.4.2025       |   1  | Käyttöliittymän laajennus |
 |        |   5  | Tietokannan käyttöönotto ja rakenteen refaktorointi |
 |        |   1  | Dokumentaation lisäys ja päivitys |
-| yht       | 23    | |
+| 13.4.2025       |   1  |  Käyttöliittymän laajennus |
+| 14.4.2025       |   2  |  Tietokannan päivitys, käyttöliittymän laajennus |
+| yht       | 26    | |
