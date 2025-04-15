@@ -73,6 +73,13 @@ class TierListRepository:
 
         self._connection.commit()
 
+    def delete_tiers(self):
+        cursor = self._connection.cursor()
+
+        cursor.execute("DELETE FROM tiers")
+
+        self._connection.commit()
+
     def create_tier_list(self, tierlist):
         cursor = self._connection.cursor()
 
