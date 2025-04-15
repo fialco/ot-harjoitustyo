@@ -51,10 +51,9 @@ def create_tables(connection):
     connection.commit()
 
 
-def insert_data(connection):
+def insert_tier_lists(connection):
     cursor = connection.cursor()
 
-    #Tier lists
     cursor.execute("""
         INSERT INTO tierlists (name)
         VALUES ("Programming Languages");
@@ -65,7 +64,13 @@ def insert_data(connection):
         VALUES ("Movie genres");
     """)
 
-    #Items
+    connection.commit()
+
+
+def insert_items(connection):
+    cursor = connection.cursor()
+
+    # Items
     cursor.execute("""
         INSERT INTO items (tierlist_id, image_path)
         VALUES (1, "/data/images/Python-logo.png");
@@ -101,7 +106,12 @@ def insert_data(connection):
         VALUES (2, "/data/images/action.jpg");
     """)
 
-    #Tiers
+    connection.commit()
+
+
+def insert_tiers(connection):
+    cursor = connection.cursor()
+
     cursor.execute("""
         INSERT INTO tiers (tierlist_id, name, rank)
         VALUES (1, "S", 0);
@@ -166,7 +176,9 @@ def initialize_database():
     drop_tables(connection)
     create_tables(connection)
 
-    insert_data(connection)
+    insert_tier_lists(connection)
+    insert_items(connection)
+    insert_tiers(connection)
 
 
 if __name__ == "__main__":

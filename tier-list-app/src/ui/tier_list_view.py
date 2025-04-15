@@ -10,7 +10,7 @@ class TierListView:
     def __init__(self, root, handle_show_list_view, tierlist_id):
         self._root = root
 
-        self._service = ItemHandler()
+        self._item_service = ItemHandler()
 
         self._tier_list_service = TierListService()
 
@@ -60,17 +60,18 @@ class TierListView:
         self.frame.destroy()
 
     def tier_list_name_input(self):
-        name = simpledialog.askstring(
-            title="Tier list name", prompt="Name the tier list:", parent=self._root)
-        self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
+        if not self._tierlist_id:
+            name = simpledialog.askstring(
+                title="Tier list name", prompt="Name the tier list:", parent=self._root)
+            self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
 
-        self._tier_list_name = name
-
+            self._tier_list_name = name
 
     def _init_tier_list_data(self):
         self._tier_list_name = 'Click here to name the tier list'
 
-        self._tiers = {0:'S', 1:'A', 2:'B', 3:'C', 4:'D'}
+        # Default tiers
+        self._tiers = {0: 'S', 1: 'A', 2: 'B', 3: 'C', 4: 'D'}
 
         if self._tierlist_id:
             tier_list = self._tier_list_service.get_tier_list(
@@ -128,7 +129,7 @@ class TierListView:
             image_path = base_dir + item.image_path
 
             # Add the image item
-            image_item = self._service.add_item(image_path, x, y)
+            image_item = self._item_service.add_item(image_path, x, y)
 
             # Place the image on the canvas
             item_id = self._canvas.create_image(x, y, image=image_item.image)
@@ -159,8 +160,8 @@ class TierListView:
             self.dnd_area = ttk.Frame(self._root)
             self.dnd_area.place(x=400, y=700, anchor='n')
 
-            self.drop_label = tk.Label(self.dnd_area, text='Drag image here',
-                                    width=20, height=3, bg='green')
+            self.drop_label = tk.Label(self.dnd_area, text='Drag image(s) here',
+                                       width=20, height=3, bg='green')
 
             self.drop_label.grid(row=0, column=0)
 
@@ -175,7 +176,7 @@ class TierListView:
             self.dnd_area.dnd_bind('<<DropLeave>>', self._on_leave)
 
             self._canvas.create_text(260, 775, anchor='w', text='Most of the image formats supported',
-                                    font=('Arial', 12, 'bold'))
+                                     font=('Arial', 12, 'bold'))
 
     def _create_back_button(self):
         """Create back button to lists."""
@@ -186,37 +187,44 @@ class TierListView:
         self._canvas.tag_bind(
             back, '<Button-1>', lambda e: self._handle_show_list_view())
 
-
     def _create_create_button(self):
         """Create back button to lists."""
 
-        create = self._canvas.create_text(
-            0, self._tier_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
+        if not self._tierlist_id:
+            create = self._canvas.create_text(
+                0, self._tier_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
 
-        self._canvas.tag_bind(
-            create, '<Button-1>', lambda e: self._handle_show_list_view())
+            self._canvas.tag_bind(
+                create, '<Button-1>', lambda e: self._create_new_tier_list())
 
     def _on_drop(self, event):
         """Handle the event when an item is dropped."""
-        image_path = event.data
 
-        # Position where the item will be placed
-        x, y = 400, 650
+        # How to handle multiple images https://stackoverflow.com/a/77834313
+        for i, path in enumerate(self._root.tk.splitlist(event.data)):
 
-        # Add the image item
-        image_item = self._service.add_item(image_path, x, y)
+            if i == 5:
+                print('For now max 5 items dropped at the same time supported')
+                break
 
-        # Place the image on the canvas
-        item_id = self._canvas.create_image(x, y, image=image_item.image)
-        self._canvas.image = image_item.image
+            # Position where the items will be placed
+            x, y = (i + 1) * 120, self._tier_count
 
-        # Store the image_item
-        self._item_map[item_id] = image_item
+            # Add the image item
+            image_item = self._item_service.add_item(path, x, y)
 
-        # Bind drag movement event
-        self._canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
-                              id=item_id: self._on_drag(e, id))
-        self._canvas.tag_bind(item_id, '<ButtonRelease-1>', self._on_drop_item)
+            # Place the image on the canvas
+            item_id = self._canvas.create_image(x, y, image=image_item.image)
+            self._canvas.image = image_item.image
+
+            # Store the image_item
+            self._item_map[item_id] = image_item
+
+            # Bind drag movement event
+            self._canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
+                                  id=item_id: self._on_drag(e, id))
+            self._canvas.tag_bind(
+                item_id, '<ButtonRelease-1>', self._on_drop_item)
 
     def _on_drag(self, event, item_id):
         """Move the item as the mouse moves."""
@@ -237,11 +245,20 @@ class TierListView:
         item = self._item_map.get(item_id)
 
         # Find the closest tier to the current Y position
-        snapped_item = self._service.snap_item_to_tier(
+        snapped_item = self._item_service.snap_item_to_tier(
             item, self.tier_positions, y)
 
         # Update the item position
         self._canvas.coords(item_id, x, snapped_item.y)
+
+    def _create_new_tier_list(self):
+        # Creates a list of image paths
+        items = [item.image_path for key, item in self._item_map.items()]
+        self._tier_list_service.create_tier_list_template(
+            self._tier_list_name, self._tiers, items)
+
+        # Return to list view
+        self._handle_show_list_view()
 
 
 """These classes were originally in services and entities
@@ -258,7 +275,7 @@ class ItemHandler:
         """Adds a new image item."""
         image = ImageRepository.load_image(image_path)
         item_id = f"item_{len(self._items)}"
-        image_item = ImageItem(image, item_id, x, y)
+        image_item = ImageItem(image, image_path, item_id, x, y)
 
         self._items.append(image_item)
 
@@ -276,8 +293,9 @@ class ItemHandler:
 
 
 class ImageItem:
-    def __init__(self, image, item_id, x, y):
+    def __init__(self, image, image_path, item_id, x, y):
         self.image = image
+        self.image_path = image_path
         self.item_id = item_id
         self.x = x
         self.y = y

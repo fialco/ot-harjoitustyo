@@ -9,8 +9,8 @@ class TestTierListRepository(unittest.TestCase):
         tier_list_repository.delete_tier_lists()
         tier_list_repository.delete_items()
 
-        self.tier_list_music = TierList(1, 'Music genres')
-        self.tier_list_tv = TierList(2, 'TV-shows')
+        self.tier_list_music = TierList('Music genres', 1)
+        self.tier_list_tv = TierList('TV-shows', 2)
 
         self.item_rock = Item(1, 'rock.png')
         self.item_pop = Item(1, 'pop.png')
@@ -42,8 +42,7 @@ class TestTierListRepository(unittest.TestCase):
     def test_find_items_by_tier_list(self):
         tier_list_repository.create_tier_list(self.tier_list_music)
 
-        tier_list_repository.create_item(self.item_rock)
-        tier_list_repository.create_item(self.item_pop)
+        tier_list_repository.create_items([self.item_rock, self.item_pop])
 
         items = tier_list_repository.find_items_by_tier_list(1)
 

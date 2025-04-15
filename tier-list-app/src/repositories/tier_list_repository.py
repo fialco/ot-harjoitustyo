@@ -3,14 +3,18 @@ from entities.tier_list import TierList
 from entities.item import Item
 from entities.tier import Tier
 
+
 def get_tier_list_by_row(row):
-    return TierList(row["id"], row["name"]) if row else None
+    return TierList(row["name"], row["id"]) if row else None
+
 
 def get_items_by_row(row):
     return Item(row["tierlist_id"], row["image_path"]) if row else None
 
+
 def get_tiers_by_row(row):
     return Tier(row["tierlist_id"], row["name"], row["rank"]) if row else None
+
 
 class TierListRepository:
     def __init__(self, connection):
@@ -55,7 +59,6 @@ class TierListRepository:
 
         return list(map(get_tiers_by_row, rows))
 
-    # These are used only for testing for now until functionality added properly to app
     def delete_tier_lists(self):
         cursor = self._connection.cursor()
 
@@ -78,22 +81,40 @@ class TierListRepository:
             (tierlist.name,)
         )
 
+        tierlist.id = cursor.lastrowid
+
         self._connection.commit()
 
         return tierlist
 
-    def create_item(self, item):
+    def create_items(self, items):
         cursor = self._connection.cursor()
 
-        cursor.execute(
-            "insert into items (tierlist_id, image_path) values (?, ?)",
-            (item.tierlist_id,
-             item.image_path,)
-        )
+        for item in items:
+            cursor.execute(
+                "insert into items (tierlist_id, image_path) values (?, ?)",
+                (item.tierlist_id,
+                 item.image_path,)
+            )
 
         self._connection.commit()
 
-        return item
+        return items
+
+    def create_tiers(self, tiers):
+        cursor = self._connection.cursor()
+
+        for tier in tiers:
+            cursor.execute(
+                "insert into tiers (tierlist_id, name, rank) values (?, ?, ?)",
+                (tier.tierlist_id,
+                 tier.name,
+                 tier.rank,)
+            )
+
+        self._connection.commit()
+
+        return tiers
 
 
 tier_list_repository = TierListRepository(get_database_connection())
