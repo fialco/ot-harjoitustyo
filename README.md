@@ -66,3 +66,6 @@ Pylint tarkistukset voi suorittaa komennolla:
 poetry run invoke lint
 ```
 Tarkistukset suoritetaan [.pylintrc](tier-list-app/.pylintrc) määritelmien mukaisesti
+
+<b>Ylimääräinen koodikatselmointi:</b>
+https://github.com/antoKeinanen/ohjelmistotekniikka-harjoitus
