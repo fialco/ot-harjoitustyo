@@ -21,7 +21,7 @@ että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 ```bash
 poetry install
 ```
-2. Asennus todennäköisesti tuottaa Pillowin kanssa virheen joka ei viikon 5 releaseen kerennyt. Suorita poetryn ehdottama komento joka korjaa ongelma.
+2. :warning: Koskee viikon 5 deadline releasea. Asennus todennäköisesti tuottaa Pillowin kanssa virheen joka ei releaseen kerennyt. Suorita poetryn ehdottama komento joka korjaa ongelma.
 
 ```bash
 poetry lock --no-cache --regenerate

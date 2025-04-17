@@ -1,4 +1,5 @@
 import tkinter as tk
+import uuid
 from tkinter import ttk, simpledialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 
@@ -10,19 +11,17 @@ class TierListView:
     def __init__(self, root, handle_show_list_view, tierlist_id):
         self._root = root
 
-        self._item_service = ItemHandler()
-
-        self._tier_list_service = TierListService()
+        self._service = TierListService()
 
         self._handle_show_list_view = handle_show_list_view
 
         self._tierlist_id = tierlist_id
 
-        self.frame = tk.Frame(self._root)
-        self.frame.pack(fill=tk.BOTH, expand=True)
+        self._frame = tk.Frame(self._root)
+        self._frame.pack(fill=tk.BOTH, expand=True)
 
         # Canvas for items and tiers
-        self._canvas = tk.Canvas(self.frame, bg="snow2", height=900, width=800)
+        self._canvas = tk.Canvas(self._frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.tier_height = 100
@@ -32,8 +31,7 @@ class TierListView:
         # Draw tiers on the canvas
         self._draw_tiers()
 
-        # Dictionary to store item ID to ImageItem mapping
-        # Proper storage later
+        # Dict to store item ids and items
         self._item_map = {}
 
         self._create_drag_drop_area()
@@ -43,7 +41,7 @@ class TierListView:
         self._create_back_button()
         self._create_create_button()
 
-        scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
+        scrollbar = ttk.Scrollbar(self._frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Config canvast to use the scrollbar
@@ -53,11 +51,11 @@ class TierListView:
 
     def pack(self):
         """Show view."""
-        self.frame.pack(fill=tk.BOTH, expand=True)
+        self._frame.pack(fill=tk.BOTH, expand=True)
 
     def destroy(self):
         """Destory view."""
-        self.frame.destroy()
+        self._frame.destroy()
 
     def tier_list_name_input(self):
         if not self._tierlist_id:
@@ -74,11 +72,11 @@ class TierListView:
         self._tiers = {0: 'S', 1: 'A', 2: 'B', 3: 'C', 4: 'D'}
 
         if self._tierlist_id:
-            tier_list = self._tier_list_service.get_tier_list(
+            tier_list = self._service.get_tier_list(
                 self._tierlist_id)
             self._tier_list_name = tier_list.name
 
-            tier_data = self._tier_list_service.get_tiers_of_tier_list(
+            tier_data = self._service.get_tiers_of_tier_list(
                 self._tierlist_id)
 
             self._tiers = {}
@@ -117,10 +115,10 @@ class TierListView:
                                       outline='black', width=2, fill='gray80')
 
     def _draw_items(self):
-        items = self._tier_list_service.get_items_of_tier_list(
+        items = self._service.get_items_of_tier_list(
             self._tierlist_id)
 
-        base_dir = self._tier_list_service.get_base_dir_path()
+        base_dir = self._service.get_base_dir_path()
 
         for i, item in enumerate(items):
             # Position where the items will be placed
@@ -129,11 +127,12 @@ class TierListView:
             image_path = base_dir + item.image_path
 
             # Add the image item
-            image_item = self._item_service.add_item(image_path, x, y)
+            image_item = ItemHandler(image_path, x, y)
 
             # Place the image on the canvas
-            item_id = self._canvas.create_image(x, y, image=image_item.image)
-            self._canvas.image = image_item.image
+            item_id = self._canvas.create_image(
+                x, y, image=image_item.photo_image)
+            self._canvas.image = image_item.photo_image
 
             # Store the image_item
             self._item_map[item_id] = image_item
@@ -153,12 +152,13 @@ class TierListView:
         self.drop_label.config(bg='green')
 
     def _create_drag_drop_area(self):
-        """Create the drag and drop functionality for images.
-        Created for new templates."""
+        """Create the drag and drop functionality for images."""
 
         if not self._tierlist_id:
-            self.dnd_area = ttk.Frame(self._root)
-            self.dnd_area.place(x=400, y=700, anchor='n')
+            self.dnd_area = ttk.Frame(self._canvas)
+
+            self._canvas.create_window(
+                400, self._tier_count+100, anchor="n", window=self.dnd_area)
 
             self.drop_label = tk.Label(self.dnd_area, text='Drag image(s) here',
                                        width=20, height=3, bg='green')
@@ -210,12 +210,12 @@ class TierListView:
             # Position where the items will be placed
             x, y = (i + 1) * 120, self._tier_count
 
-            # Add the image item
-            image_item = self._item_service.add_item(path, x, y)
+            image_item = ItemHandler(path, x, y)
 
             # Place the image on the canvas
-            item_id = self._canvas.create_image(x, y, image=image_item.image)
-            self._canvas.image = image_item.image
+            item_id = self._canvas.create_image(
+                x, y, image=image_item.photo_image)
+            self._canvas.image = image_item.photo_image
 
             # Store the image_item
             self._item_map[item_id] = image_item
@@ -245,61 +245,44 @@ class TierListView:
         item = self._item_map.get(item_id)
 
         # Find the closest tier to the current Y position
-        snapped_item = self._item_service.snap_item_to_tier(
-            item, self.tier_positions, y)
+        snapped_item = item.snap_item_to_tier(
+            item, self.tier_positions, x, y)
 
         # Update the item position
-        self._canvas.coords(item_id, x, snapped_item.y)
+        self._canvas.coords(item_id, snapped_item.x, snapped_item.y)
 
     def _create_new_tier_list(self):
         # Creates a list of image paths
         items = [item.image_path for key, item in self._item_map.items()]
-        self._tier_list_service.create_tier_list_template(
+        self._service.create_tier_list_template(
             self._tier_list_name, self._tiers, items)
 
         # Return to list view
         self._handle_show_list_view()
 
 
-"""These classes were originally in services and entities
-but moved here because these only handle item moving in UI.
-Will probably be replaced by more elegant system."""
-
-
 class ItemHandler:
-    def __init__(self):
-        # For now used just for ids
-        self._items = []
-
-    def add_item(self, image_path, x, y):
-        """Adds a new image item."""
-        image = ImageRepository.load_image(image_path)
-        item_id = f"item_{len(self._items)}"
-        image_item = ImageItem(image, image_path, item_id, x, y)
-
-        self._items.append(image_item)
-
-        return image_item
-
-    def snap_item_to_tier(self, item, tier_positions, event_y):
-        """Snap the item to the closest tier."""
-
-        # Idea for finding the shortest distance from
-        # https://medium.com/@zzysjtu/python-min-function-a-deep-dive-f72cbd771872
-        closest_tier = min(tier_positions, key=lambda y: abs(event_y - y))
-        item.update_position(item.x, closest_tier)
-
-        return item
-
-
-class ImageItem:
-    def __init__(self, image, image_path, item_id, x, y):
-        self.image = image
+    def __init__(self, image_path, x, y):
+        self.photo_image = ImageRepository.load_image(image_path)
+        self.item_id = str(uuid.uuid4())
         self.image_path = image_path
-        self.item_id = item_id
         self.x = x
         self.y = y
 
     def update_position(self, x, y):
         self.x = x
         self.y = y
+
+    def snap_item_to_tier(self, item, tier_positions, event_x, event_y):
+        """Snap the item to the closest tier."""
+
+        # Finding the shortest distance
+        # https://medium.com/@zzysjtu/python-min-function-a-deep-dive-f72cbd771872
+        closest_tier = min(tier_positions, key=lambda y: abs(event_y - y))
+
+        # Check if inbounds of window in x axis
+        event_x = max(50, min(event_x, 750))
+
+        item.update_position(event_x, closest_tier)
+
+        return item

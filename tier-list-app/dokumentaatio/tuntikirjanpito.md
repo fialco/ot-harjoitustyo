@@ -16,4 +16,5 @@
 | 14.4.2025       |   3  |  Tietokannan päivitys, käyttöliittymän laajennus |
 | 15.4.2025       |   4  |  Lisää tietokantaan tallennus |
 |        |   1.5  |  Dokumentaation ja testien päivitys |
-| yht       | 32.5    | |
+| 17.4.2025       |   1.5  |  Refaktorointia ja käyttöliittymä parannusta |
+| yht       | 34    | |

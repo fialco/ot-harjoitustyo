@@ -30,10 +30,10 @@ class ListView:
         """Destory view."""
         self.frame.destroy()
 
-    def choose_button_click(self, tier_list):
+    def _choose_button_click(self, tier_list):
         self._handle_show_tier_list_view(tier_list.id)
 
-    def new_button_click(self):
+    def _new_button_click(self):
         self._handle_show_tier_list_view()
 
     def _draw_list(self):
@@ -51,7 +51,7 @@ class ListView:
             400, 30, text="New template", font=('Arial', 25, 'bold'), fill='blue')
 
         self._canvas.tag_bind(
-            new, '<Button-1>', lambda e: self.new_button_click())
+            new, '<Button-1>', lambda e: self._new_button_click())
 
         for i in range(len(self.list)):
             y_position = (i+2) * 50
@@ -65,7 +65,7 @@ class ListView:
                 750, y_position, text="Choose", font=('Arial', 15, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
-                choose, '<Button-1>', lambda e, i=i: self.choose_button_click(self.list[i]))
+                choose, '<Button-1>', lambda e, i=i: self._choose_button_click(self.list[i]))
 
         scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
