@@ -3,11 +3,21 @@ from ui.list_view import ListView
 
 
 class UI:
+    """Class, which handles application's user interface."""
+
     def __init__(self, root):
+        """Class constructor. Creates a class for user interface handling.
+
+        Args:
+            root:
+                TKinterDND-element, into which the user interface is initialized.
+        """
+
         self._root = root
         self._current_view = None
 
     def start(self):
+        """Starts the user interface."""
         self._show_list_view()
 
     def _hide_current_view(self):

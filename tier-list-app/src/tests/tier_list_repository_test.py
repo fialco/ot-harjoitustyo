@@ -7,9 +7,7 @@ from entities.tier import Tier
 
 class TestTierListRepository(unittest.TestCase):
     def setUp(self):
-        tier_list_repository.delete_tier_lists()
-        tier_list_repository.delete_items()
-        tier_list_repository.delete_tiers()
+        tier_list_repository.delete_all()
 
         self.tier_list_music = TierList('Music genres', 1)
         self.tier_list_tv = TierList('TV-shows', 2)

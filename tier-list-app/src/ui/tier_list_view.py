@@ -21,7 +21,8 @@ class TierListView:
         self._frame.pack(fill=tk.BOTH, expand=True)
 
         # Canvas for items and tiers
-        self._canvas = tk.Canvas(self._frame, bg="snow2", height=900, width=800)
+        self._canvas = tk.Canvas(
+            self._frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.tier_height = 100
@@ -264,7 +265,7 @@ class TierListView:
 class ItemHandler:
     def __init__(self, image_path, x, y):
         self.photo_image = ImageRepository.load_image(image_path)
-        self.item_id = str(uuid.uuid4())
+        self.item_id = uuid.uuid4().int
         self.image_path = image_path
         self.x = x
         self.y = y

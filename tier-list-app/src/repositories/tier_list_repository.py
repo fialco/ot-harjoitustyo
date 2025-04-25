@@ -17,10 +17,25 @@ def get_tiers_by_row(row):
 
 
 class TierListRepository:
+    """Class, which handles database operations.
+    """
+
     def __init__(self, connection):
+        """Class constructor.
+
+        Args:
+            connection: Object for database connection.
+        """
+
         self._connection = connection
 
     def find_all_tier_lists(self):
+        """Return all tier lists.
+
+        Returns:
+            List containing TierList-objects of every tier list.
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute("SELECT * FROM tierlists")
@@ -30,6 +45,15 @@ class TierListRepository:
         return list(map(get_tier_list_by_row, rows))
 
     def find_tier_list(self, tierlist_id):
+        """Return a specific tier list.
+
+        Args:
+            tierlist_id: Integer of the tier lists id.
+
+        Returns:
+            Tier list in TierList-object form.
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute(
@@ -40,6 +64,15 @@ class TierListRepository:
         return get_tier_list_by_row(row)
 
     def find_items_by_tier_list(self, tierlist_id):
+        """Return items of specific to a tier list.
+
+        Args:
+            tierlist_id: Integer of the tier lists id.
+
+        Returns:
+            List containing Item-objects of every item of a tier list.
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute(
@@ -50,6 +83,15 @@ class TierListRepository:
         return list(map(get_items_by_row, rows))
 
     def find_tiers_by_tier_list(self, tierlist_id):
+        """Return tiers of specific to a tier list.
+
+        Args:
+            tierlist_id: Integer of the tier lists id.
+
+        Returns:
+            List containing Tier-objects of every tier of a tier list.
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute(
@@ -59,28 +101,29 @@ class TierListRepository:
 
         return list(map(get_tiers_by_row, rows))
 
-    def delete_tier_lists(self):
+    def delete_all(self):
+        """Delete all from tables
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute("DELETE FROM tierlists")
-
-        self._connection.commit()
-
-    def delete_items(self):
-        cursor = self._connection.cursor()
-
         cursor.execute("DELETE FROM items")
-
-        self._connection.commit()
-
-    def delete_tiers(self):
-        cursor = self._connection.cursor()
-
         cursor.execute("DELETE FROM tiers")
 
         self._connection.commit()
 
     def create_tier_list(self, tierlist):
+        """Creates a new tier list.
+
+        Args:
+            tierlist: Tier list to be saved as a TierList-object.
+
+        Returns:
+            Saved tier list as a TierList-object.
+
+        """
+
         cursor = self._connection.cursor()
 
         cursor.execute(
@@ -95,6 +138,16 @@ class TierListRepository:
         return tierlist
 
     def create_items(self, items):
+        """Creates items of a tier list.
+
+        Args:
+            items: List of items to be saved as Item-objects.
+
+        Returns:
+            Saved items as a list of Item-objects.
+
+        """
+
         cursor = self._connection.cursor()
 
         for item in items:
@@ -109,6 +162,16 @@ class TierListRepository:
         return items
 
     def create_tiers(self, tiers):
+        """Creates tiers of a tier list.
+
+        Args:
+            tiers: List of iters to be saved as Iter-objects.
+
+        Returns:
+            Saved iters as a list of Tier-objects.
+
+        """
+
         cursor = self._connection.cursor()
 
         for tier in tiers:

@@ -17,4 +17,5 @@
 | 15.4.2025       |   4  |  Lisää tietokantaan tallennus |
 |        |   1.5  |  Dokumentaation ja testien päivitys |
 | 17.4.2025       |   1.5  |  Refaktorointia ja käyttöliittymä parannusta |
-| yht       | 34    | |
+| 25.4.2025       |   1.5  | Docstringien lisäys  |
+| yht       | 35.5    | |
