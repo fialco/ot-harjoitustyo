@@ -3,6 +3,7 @@
 Kurssin harjoitustyönä on **graaffisella käyttöliittymällä** varustettu *Tier list* sovellus.
 
 ## Dokumentaatio
+* [Käyttöohje](/tier-list-app/dokumentaatio/kayttoohje.md)
 * [Vaatimusmäärittely](/tier-list-app/dokumentaatio/vaatimusmaarittely.md)
 * [Tuntikirjanpito](/tier-list-app/dokumentaatio/tuntikirjanpito.md)
 * [Changelog](/tier-list-app/dokumentaatio/changelog.md)

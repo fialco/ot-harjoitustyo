@@ -18,4 +18,5 @@
 |        |   1.5  |  Dokumentaation ja testien päivitys |
 | 17.4.2025       |   1.5  |  Refaktorointia ja käyttöliittymä parannusta |
 | 25.4.2025       |   1.5  | Docstringien lisäys  |
-| yht       | 35.5    | |
+| 27.4.2025       |   1.5  | Dokumentaatio  |
+| yht       | 37    | |
