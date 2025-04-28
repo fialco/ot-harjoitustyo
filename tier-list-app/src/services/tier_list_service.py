@@ -119,5 +119,14 @@ class TierListService:
                  for rank, name in tier_data.items()]
         self.tier_list_repository.create_tiers(tiers)
 
+    def delete_tier_list(self, tierlist_id):
+        """Deletes a tier list and related tiers and items from DB.
+
+        Args:
+            tierlist_id: Integer of the tier lists id.
+        """
+
+        self.tier_list_repository.delete_tier_list(tierlist_id)
+
 
 tier_list_service = TierListService()

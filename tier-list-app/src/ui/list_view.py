@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 from services.tier_list_service import TierListService
 
@@ -11,8 +11,6 @@ class ListView:
 
         self._handle_show_tier_list_view = handle_show_tier_list_view
 
-        self.list = self._service.get_tier_lists()
-
         self.frame = tk.Frame(self._root)
         self.frame.pack(fill=tk.BOTH, expand=True)
 
@@ -20,7 +18,7 @@ class ListView:
         self._canvas = tk.Canvas(self.frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        self._draw_list()
+        self._initialize()
 
     def pack(self):
         """Show view."""
@@ -33,15 +31,30 @@ class ListView:
     def _choose_button_click(self, tier_list):
         self._handle_show_tier_list_view(tier_list.id)
 
+    def _delete_button_click(self, tier_list):
+        if messagebox.askyesno(title='Delete tier list?',
+                               message='Are you sure you want to delete this tier list?'):
+
+            self._service.delete_tier_list(tier_list.id)
+            self._draw_items()
+
     def _new_button_click(self):
         self._handle_show_tier_list_view()
 
-    def _draw_list(self):
-        """Draw list of different tier lists."""
+    def _initialize(self):
+        scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        if len(self.list) == 0:
-            self._canvas.create_text(0, 0,  anchor='n', text="List empty, please run 'poetry run invoke build'.",
-                                     font=('Arial', 25, 'bold'))
+        # Config canvast to use the scrollbar
+        self._canvas.config(yscrollcommand=scrollbar.set)
+
+        self._canvas.config(scrollregion=self._canvas.bbox("all"))
+
+        self._draw_items()
+
+    def _draw_items(self):
+        self._canvas.delete('all')
+        self._list = self._service.get_tier_lists()
 
         # New template box and button
         self._canvas.create_rectangle(0, 0, 800, 75,
@@ -53,24 +66,22 @@ class ListView:
         self._canvas.tag_bind(
             new, '<Button-1>', lambda e: self._new_button_click())
 
-        for i in range(len(self.list)):
+        for i in range(len(self._list)):
             y_position = (i+2) * 50
             self._canvas.create_rectangle(0, y_position-25, 800, y_position + 25,
                                           outline='black', width=2, fill='azure')
 
-            self._canvas.create_text(5,  y_position, anchor='w', text=f"{self.list[i].name}",
-                                     font=('Arial', 25, 'bold'))
+            self._canvas.create_text(5,  y_position, anchor='w', text=f"{self._list[i].name}",
+                                     font=('Arial', 18, 'bold'))
 
             choose = self._canvas.create_text(
-                750, y_position, text="Choose", font=('Arial', 15, 'bold'), fill='blue')
+                730, y_position, text="Choose", font=('Arial', 15, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
-                choose, '<Button-1>', lambda e, i=i: self._choose_button_click(self.list[i]))
+                choose, '<Button-1>', lambda e, i=i: self._choose_button_click(self._list[i]))
 
-        scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            delete = self._canvas.create_text(
+                785, y_position, text="X", font=('Arial', 20, 'bold'), fill='red')
 
-        # Config canvast to use the scrollbar
-        self._canvas.config(yscrollcommand=scrollbar.set)
-
-        self._canvas.config(scrollregion=self._canvas.bbox("all"))
+            self._canvas.tag_bind(
+                delete, '<Button-1>', lambda e, i=i: self._delete_button_click(self._list[i]))

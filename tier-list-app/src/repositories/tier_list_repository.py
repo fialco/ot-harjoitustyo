@@ -101,18 +101,6 @@ class TierListRepository:
 
         return list(map(get_tiers_by_row, rows))
 
-    def delete_all(self):
-        """Delete all from tables
-        """
-
-        cursor = self._connection.cursor()
-
-        cursor.execute("DELETE FROM tierlists")
-        cursor.execute("DELETE FROM items")
-        cursor.execute("DELETE FROM tiers")
-
-        self._connection.commit()
-
     def create_tier_list(self, tierlist):
         """Creates a new tier list.
 
@@ -185,6 +173,35 @@ class TierListRepository:
         self._connection.commit()
 
         return tiers
+
+    def delete_all(self):
+        """Delete all from tables
+        """
+
+        cursor = self._connection.cursor()
+
+        cursor.execute("DELETE FROM tierlists")
+        cursor.execute("DELETE FROM items")
+        cursor.execute("DELETE FROM tiers")
+
+        self._connection.commit()
+
+    def delete_tier_list(self, tierlist_id):
+        """Deletes a tier list and related tiers and items from DB.
+
+        Args:
+            tierlist_id: Integer of the tier lists id.
+        """
+
+        cursor = self._connection.cursor()
+
+        cursor.execute(
+            "DELETE FROM items WHERE tierlist_id = ?", (tierlist_id,))
+        cursor.execute(
+            "DELETE FROM tiers WHERE tierlist_id = ?", (tierlist_id,))
+        cursor.execute("DELETE FROM tierlists WHERE id = ?", (tierlist_id,))
+
+        self._connection.commit()
 
 
 tier_list_repository = TierListRepository(get_database_connection())
