@@ -22,4 +22,5 @@
 | 28.4.2025       |  1   |  Tier listin poisto tietokannasta |
 | 29.4.2025       |  0.5   | Refaktorointia  |
 |       |  1.5   | Dokumentaatio  |
-| yht       | 40    | |
+|       |  1   | Lisää testejä |
+| yht       | 41    | |
