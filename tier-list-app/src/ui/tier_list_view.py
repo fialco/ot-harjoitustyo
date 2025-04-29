@@ -4,14 +4,13 @@ from tkinter import ttk, simpledialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 
 from services.tier_list_service import TierListService
-from repositories.image_repository import ImageRepository
 
 
 class TierListView:
     def __init__(self, root, handle_show_list_view, tierlist_id):
         self._root = root
 
-        self._service = TierListService()
+        self.service = TierListService()
 
         self._handle_show_list_view = handle_show_list_view
 
@@ -73,11 +72,11 @@ class TierListView:
         self._tiers = {0: 'S', 1: 'A', 2: 'B', 3: 'C', 4: 'D'}
 
         if self._tierlist_id:
-            tier_list = self._service.get_tier_list(
+            tier_list = self.service.get_tier_list(
                 self._tierlist_id)
             self._tier_list_name = tier_list.name
 
-            tier_data = self._service.get_tiers_of_tier_list(
+            tier_data = self.service.get_tiers_of_tier_list(
                 self._tierlist_id)
 
             self._tiers = {}
@@ -116,10 +115,10 @@ class TierListView:
                                       outline='black', width=2, fill='gray80')
 
     def _draw_items(self):
-        items = self._service.get_items_of_tier_list(
+        items = self.service.get_items_of_tier_list(
             self._tierlist_id)
 
-        base_dir = self._service.get_base_dir_path()
+        base_dir = self.service.get_base_dir_path()
 
         for i, item in enumerate(items):
             # Position where the items will be placed
@@ -128,7 +127,7 @@ class TierListView:
             image_path = base_dir + item.image_path
 
             # Add the image item
-            image_item = ItemHandler(image_path, x, y)
+            image_item = ItemHandler(self.service, image_path, x, y)
 
             # Place the image on the canvas
             item_id = self._canvas.create_image(
@@ -211,7 +210,7 @@ class TierListView:
             # Position where the items will be placed
             x, y = (i + 1) * 120, self._tier_count
 
-            image_item = ItemHandler(path, x, y)
+            image_item = ItemHandler(self.service, path, x, y)
 
             # Place the image on the canvas
             item_id = self._canvas.create_image(
@@ -242,20 +241,18 @@ class TierListView:
         # From https://stackoverflow.com/a/7604311
         item_id = self._canvas.find_withtag("current")[0]
 
-        # Retrieve the image_item
         item = self._item_map.get(item_id)
 
         # Find the closest tier to the current Y position
         snapped_item = item.snap_item_to_tier(
             item, self.tier_positions, x, y)
 
-        # Update the item position
         self._canvas.coords(item_id, snapped_item.x, snapped_item.y)
 
     def _create_new_tier_list(self):
         # Creates a list of image paths
         items = [item.image_path for key, item in self._item_map.items()]
-        self._service.create_tier_list_template(
+        self.service.create_tier_list_template(
             self._tier_list_name, self._tiers, items)
 
         # Return to list view
@@ -263,8 +260,8 @@ class TierListView:
 
 
 class ItemHandler:
-    def __init__(self, image_path, x, y):
-        self.photo_image = ImageRepository.load_image(image_path)
+    def __init__(self, service, image_path, x, y):
+        self.photo_image = service.get_image(image_path)
         self.item_id = uuid.uuid4().int
         self.image_path = image_path
         self.x = x

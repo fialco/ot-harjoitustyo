@@ -96,6 +96,18 @@ class TierListService:
 
         return self.image_repository.get_base_dir_path()
 
+    def get_image(self, image_path):
+        """Return a resized image.
+
+        Args:
+            image_path: Absolute path to image.
+
+        Returns:
+            A PhotoImage-object.
+        """
+
+        return self.image_repository.load_image(image_path)
+
     def create_tier_list_template(self, name, tier_data, image_paths):
         """Creates a new tier list template.
         Item paths are checked and if they're not in /data/images,

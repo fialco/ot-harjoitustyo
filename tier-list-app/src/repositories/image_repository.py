@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 
 
 class ImageRepository:
-    """Class, which handles operations for images an their paths.
+    """Class, which handles operations for images and their paths.
     """
 
     @staticmethod
