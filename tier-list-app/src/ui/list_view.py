@@ -33,7 +33,7 @@ class ListView:
 
     def _delete_button_click(self, tier_list):
         if messagebox.askyesno(title='Delete tier list?',
-                               message='Are you sure you want to delete this tier list?'):
+                               message=f'Are you sure you want to delete tier list {tier_list.name}?'):
 
             self._service.delete_tier_list(tier_list.id)
             self._draw_items()

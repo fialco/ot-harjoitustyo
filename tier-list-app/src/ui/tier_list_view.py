@@ -26,13 +26,14 @@ class TierListView:
 
         self.tier_height = 100
 
+        # Dict to store item ids and items
+        self._item_map = {}
+        self._tier_map = {}
+
         self._init_tier_list_data()
 
         # Draw tiers on the canvas
         self._draw_tiers()
-
-        # Dict to store item ids and items
-        self._item_map = {}
 
         self._create_drag_drop_area()
 
@@ -56,14 +57,6 @@ class TierListView:
     def destroy(self):
         """Destory view."""
         self._frame.destroy()
-
-    def tier_list_name_input(self):
-        if not self._tierlist_id:
-            name = simpledialog.askstring(
-                title="Tier list name", prompt="Name the tier list:", parent=self._root)
-            self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
-
-            self._tier_list_name = name
 
     def _init_tier_list_data(self):
         self._tier_list_name = 'Click here to name the tier list'
@@ -96,7 +89,7 @@ class TierListView:
             400, 25, text=f"{self._tier_list_name}", font=('Arial', 25, 'bold'), fill='blue')
 
         self._canvas.tag_bind(
-            self.canvas_tier_list_name, '<Button-1>', lambda e: self.tier_list_name_input())
+            self.canvas_tier_list_name, '<Button-1>', lambda e: self._tier_list_name_input())
 
         # Adds the amount of tiers given
         for rank, tier in self._tiers.items():
@@ -105,8 +98,15 @@ class TierListView:
                                           self.tier_height // 2,
                                           outline='black', width=2, fill='azure')
 
-            self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"[{tier}]",
+
+            tier_id = self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"{tier}",
                                      font=('Arial', 35, 'bold'))
+
+            self._tier_map[tier_id] = rank
+
+            if not self._tierlist_id:
+                self._canvas.tag_bind(
+                    tier_id, '<Button-1>', lambda e, tier=tier: self._change_tier_name(tier))
 
         # Add container for unpicked items
         self._canvas.create_rectangle(0, self._tier_count - self.tier_height // 2,
@@ -258,6 +258,26 @@ class TierListView:
         # Return to list view
         self._handle_show_list_view()
 
+    def _tier_list_name_input(self):
+        if not self._tierlist_id:
+            name = simpledialog.askstring(
+                title="Tier list name", prompt="Name the tier list:", parent=self._root)
+            self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
+
+            self._tier_list_name = name
+
+    def _change_tier_name(self, tier_id):
+        if not self._tierlist_id:
+            tier_id = self._canvas.find_withtag("current")[0]
+
+            name = simpledialog.askstring(
+                title="Tier name", prompt="Rename the tier:", parent=self._root)
+
+            tier = self._tier_map.get(tier_id)
+
+            self._tiers[tier] = name
+
+            self._canvas.itemconfig(tier_id, text=name)
 
 class ItemHandler:
     def __init__(self, service, image_path, x, y):
