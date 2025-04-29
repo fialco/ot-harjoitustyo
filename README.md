@@ -22,21 +22,16 @@ että virtuaaliympäristössä jossa Python 3.10.12 ja poetry 2.1.2.
 ```bash
 poetry install
 ```
-2. :warning: Koskee viikon 5 deadline releasea. Asennus todennäköisesti tuottaa Pillowin kanssa virheen joka ei releaseen kerennyt. Suorita poetryn ehdottama komento joka korjaa ongelma.
 
-```bash
-poetry lock --no-cache --regenerate
-```
+2. Uudelleennimeä <b>.env.template .env</b> tiedostoksi ja <b>.env.test.template .env.test</b> tiedostoksi
 
-3. Uudelleennimeä <b>.env.template .env</b> tiedostoksi ja <b>.env.test.template .env.test</b> tiedostoksi
-
-4. Suorita alustavat toimenpiteet komennolla:
+3. Suorita alustavat toimenpiteet komennolla:
 
 ```bash
 poetry run invoke build
 ```
 
-5. Käynnistä sovellus komennolla:
+4. Käynnistä sovellus komennolla:
 
 ```bash
 poetry run invoke start

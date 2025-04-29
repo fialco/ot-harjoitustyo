@@ -58,6 +58,8 @@ Pohjan nimen voi valita klikkaamalla "Click here to name the tier list"-painiket
 
 ![](./kuvat/kayttoohje-pohja-nimi.png)
 
+Tierien nimiä voi vaihtaa klikkaamalla nimeä ja kirjoittamalla uusi nimi tekstikenttään.
+
 Kuvia pohjaan voi lisätä vetämällä ja tiputtamalla halutun kuvan tai kuvat "Drag image(s) here"-laatikoon.
 
 ![](./kuvat/kayttoohje-pohja-kuvat.png)
@@ -65,3 +67,13 @@ Kuvia pohjaan voi lisätä vetämällä ja tiputtamalla halutun kuvan tai kuvat 
 Valmis pohja tallennetaan "Create"-nappia painamalla ja on nyt valittavissa listanäkymässä.
 
 ![](./kuvat/kayttoohje-uusi-lista.png)
+
+## Tier listin poisto
+
+Tier listin voi halutessaan poistaa painamalla punaista X nappia.
+
+![](./kuvat/kayttoohje-poisto.png)
+
+Valmiina olevat pohjat saat takaisin komennolla `poetry run invoke build`.
+
+Kaikki tallennetut kuvat [images](../data/images/)-hakemistossa säilyvät.

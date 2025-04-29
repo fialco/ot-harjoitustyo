@@ -23,4 +23,5 @@
 | 29.4.2025       |  0.5   | Refaktorointia  |
 |       |  1.5   | Dokumentaatio  |
 |       |  1   | Lisää testejä |
-| yht       | 41    | |
+|       |  2   | Tier nimien muokkaus lisätty, dokumentaatio, release |
+| yht       | 43    | |

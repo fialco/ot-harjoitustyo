@@ -11,11 +11,17 @@ Pystytään täyttämään tier listejä joko valmiista pohjista tai tehdä omia
     - [x] Pystyy laittamaan tier listin asiat haluamaansa järjestykseen
         - [x] Elementtien liikuttaminen tapahtuu hiirellä
 - [x] Mahdollisuus uusien tier list pohjien tekoon
-    - [ ] Arvosteluasteikon pystyy määrittelemään itse esim (S-E) tai (5-0)
+    - [x] Arvosteluasteikon pystyy määrittelemään itse esim (S-E) tai (5-0)
+    - [] Tasojen määrän pystyy määrittelemään itse
     - [x] Asiat voi esittää kuvina
     - [ ] Asiat voi esittää tekstinä
 - [ ] Voi tallentaa kuvakaappauksen omasta tier lististä
 - [x] Tier listejä voi poistaa
+
+## Ennen viimeistä palautusta
+- [] Virhekäsittely oleellisissa paikoissa
+- [] Dynaaminen tier koko item määrän mukaan
+- [] Rajoita tier nimen pituutta
 
 ## Mahdollisia lisäyksiä
 

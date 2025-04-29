@@ -27,3 +27,9 @@ Viikolla keskitytty käyttöliittymän rakentamiseen ja kuvien lisäämiseen.
     siitä tallennetaan pienennetty kopio /data/images/ hakemistoon
     - Tietokantaan tallennetaan vain suhteellinen /data/images/kuva.jpg polku kuviin
     - Kuvia voi vetää pudotuslaatikkoon useamman (vielä korkeintaan 5) kerralla
+
+## Viikko 6
+
+- Mahdollisuus tier listien poistoon tietokannasta käyttöliittymän kautta
+- Tierien nimet voi itse määrittää
+- Poistettu suora viittaus repositorioon käyttöliittymästä. Riippuvuus nyt vain serviceen.
