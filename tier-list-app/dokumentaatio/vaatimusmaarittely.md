@@ -15,6 +15,7 @@ Pystytään täyttämään tier listejä joko valmiista pohjista tai tehdä omia
     - [x] Asiat voi esittää kuvina
     - [ ] Asiat voi esittää tekstinä
 - [ ] Voi tallentaa kuvakaappauksen omasta tier lististä
+- [x] Tier listejä voi poistaa
 
 ## Mahdollisia lisäyksiä
 

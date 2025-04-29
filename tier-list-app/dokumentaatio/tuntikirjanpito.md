@@ -20,4 +20,6 @@
 | 25.4.2025       |   1.5  | Docstringien lisäys  |
 | 27.4.2025       |   1.5  | Dokumentaatio  |
 | 28.4.2025       |  1   |  Tier listin poisto tietokannasta |
-| yht       | 38    | |
+| 29.4.2025       |  0.5   | Refaktorointia  |
+|       |  1.5   | Dokumentaatio  |
+| yht       | 40    | |
