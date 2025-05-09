@@ -1,6 +1,6 @@
 import tkinter as tk
 import uuid
-from tkinter import ttk, simpledialog
+from tkinter import ttk, simpledialog, messagebox
 from tkinterdnd2 import TkinterDnD, DND_FILES
 
 from services.tier_list_service import TierListService
@@ -58,11 +58,29 @@ class TierListView:
         """Destory view."""
         self._frame.destroy()
 
+    def _ask_tier_count(self):
+        min_count = 2
+        max_count = 10
+
+        while True:
+            count = simpledialog.askinteger(
+                title="Tier count", prompt=f"How many tiers from {min_count} to {max_count}?", parent=self._frame)
+
+            if count is None:
+                continue
+
+            elif min_count <= count <= max_count:
+                return count
+
+            messagebox.showerror("Invalid Input", "Please enter a valid integer.")
+
     def _init_tier_list_data(self):
         self._tier_list_name = 'Click here to name the tier list'
 
-        # Default tiers
-        self._tiers = {0: 'S', 1: 'A', 2: 'B', 3: 'C', 4: 'D'}
+        if not self._tierlist_id:
+            count = self._ask_tier_count()
+            names = ['S', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+            self._tiers = dict(zip(range(count), names))
 
         if self._tierlist_id:
             tier_list = self.service.get_tier_list(
@@ -100,7 +118,7 @@ class TierListView:
 
 
             tier_id = self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"{tier}",
-                                     font=('Arial', 35, 'bold'))
+                                     font=('Arial', 18, 'bold'), width=100)
 
             self._tier_map[tier_id] = rank
 
@@ -174,9 +192,6 @@ class TierListView:
 
             self.dnd_area.dnd_bind('<<DropEnter>>', self._on_hover)
             self.dnd_area.dnd_bind('<<DropLeave>>', self._on_leave)
-
-            self._canvas.create_text(260, 775, anchor='w', text='Most of the image formats supported',
-                                     font=('Arial', 12, 'bold'))
 
     def _create_back_button(self):
         """Create back button to lists."""
