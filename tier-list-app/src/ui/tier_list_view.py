@@ -107,7 +107,7 @@ class TierListView:
             400, 25, text=f"{self._tier_list_name}", font=('Arial', 25, 'bold'), fill='blue')
 
         self._canvas.tag_bind(
-            self.canvas_tier_list_name, '<Button-1>', lambda e: self._tier_list_name_input())
+            self.canvas_tier_list_name, '<Button-1>', lambda e: self._change_tier_list_name())
 
         # Adds the amount of tiers given
         for rank, tier in self._tiers.items():
@@ -273,46 +273,37 @@ class TierListView:
         # Return to list view
         self._handle_show_list_view()
 
-    def _tier_list_name_input(self):
+    def _handle_name_input(self, max_len):
+        while True:
+            name = simpledialog.askstring(
+                title='Tier name', prompt=f'Input a name (max {max_len} characters):', parent=self._root)
+
+            if name is None:
+                break
+
+            if 1 <= len(name) <= max_len:
+                return name
+
+            messagebox.showerror('Invalid Input', 'Please enter a valid name.')
+
+    def _change_tier_list_name(self):
         if not self._tierlist_id:
-            max_len = 28
-            while True:
-                name = simpledialog.askstring(
-                    title='Tier list name', prompt=f"Name the tier list (max {max_len} characters):", parent=self._root)
+            name = self._handle_name_input(28)
 
-                if name is None:
-                    break
-
-                if 1 <= len(name) <= max_len:
-                    break
-
-                messagebox.showerror('Invalid Input', 'Please enter a valid name.')
-
-            self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
-
-            self._tier_list_name = name
+            if name:
+                self._canvas.itemconfig(self.canvas_tier_list_name, text=name)
+                self._tier_list_name = name
 
     def _change_tier_name(self, tier_id):
         if not self._tierlist_id:
             tier_id = self._canvas.find_withtag("current")[0]
             tier = self._tier_map.get(tier_id)
 
-            max_len = 20
-            while True:
-                name = simpledialog.askstring(
-                    title='Tier name', prompt=f'Name the tier (max {max_len} characters):', parent=self._root)
+            name = self._handle_name_input(20)
 
-                if name is None:
-                    break
-
-                if 1 <= len(name) <= max_len:
-                    break
-
-                messagebox.showerror('Invalid Input', 'Please enter a valid name.')
-
-            self._tiers[tier] = name
-
-            self._canvas.itemconfig(tier_id, text=name)
+            if name:
+                self._tiers[tier] = name
+                self._canvas.itemconfig(tier_id, text=name)
 
 class ItemHandler:
     def __init__(self, service, image_path, x, y):
