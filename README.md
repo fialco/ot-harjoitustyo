@@ -8,6 +8,7 @@ Kurssin harjoitustyönä on **graaffisella käyttöliittymällä** varustettu *T
 * [Tuntikirjanpito](/tier-list-app/dokumentaatio/tuntikirjanpito.md)
 * [Changelog](/tier-list-app/dokumentaatio/changelog.md)
 * [Arkkitehtuurikuvaus](/tier-list-app/dokumentaatio/arkkitehtuuri.md)
+* [Viimeisin release](https://github.com/fialco/ot-harjoitustyo/releases/tag/viikko6)
 
 ## Python ja poetry versioista
 Ohjelma testattu sekä fuksiläppärillä jossa Python 3.12.3 ja poetry 2.1.2,
