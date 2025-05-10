@@ -27,5 +27,6 @@
 | 9.5.2025       |  2   | Käyttöliittymän laajennus  |
 |        |  2   | Kuvakaappaus ominaisuus  |
 | 10.5.2025       |  0.5   | Kuvakaappaus ominaisuus  |
-| 10.5.2025       |  1   | Virhekäsittelyn lisäilyä  |
-| yht       | 48.5    | |
+|        |  1   | Virhekäsittelyn lisäilyä  |
+|        |  2   | Lisää testejä  |
+| yht       | 50.5    | |
