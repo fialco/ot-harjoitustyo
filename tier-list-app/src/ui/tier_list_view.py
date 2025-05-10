@@ -41,6 +41,7 @@ class TierListView:
 
         self._create_back_button()
         self._create_create_button()
+        self._create_screenshot_button()
 
         scrollbar = ttk.Scrollbar(self._frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -72,7 +73,8 @@ class TierListView:
             elif min_count <= count <= max_count:
                 return count
 
-            messagebox.showerror('Invalid Input', 'Please enter a valid integer.')
+            messagebox.showerror(
+                'Invalid Input', 'Please enter a valid integer.')
 
     def _init_tier_list_data(self):
         self._tier_list_name = 'Click here to name the tier list'
@@ -116,9 +118,8 @@ class TierListView:
                                           self.tier_height // 2,
                                           outline='black', width=2, fill='azure')
 
-
             tier_id = self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"{tier}",
-                                     font=('Arial', 16, 'bold'), width=100)
+                                               font=('Arial', 16, 'bold'), width=100)
 
             self._tier_map[tier_id] = rank
 
@@ -194,8 +195,6 @@ class TierListView:
             self.dnd_area.dnd_bind('<<DropLeave>>', self._on_leave)
 
     def _create_back_button(self):
-        """Create back button to lists."""
-
         back = self._canvas.create_text(
             0, self._tier_count + 100, anchor='w', text="Back", font=('Arial', 20, 'bold'), fill='blue')
 
@@ -203,14 +202,20 @@ class TierListView:
             back, '<Button-1>', lambda e: self._handle_show_list_view())
 
     def _create_create_button(self):
-        """Create back button to lists."""
-
         if not self._tierlist_id:
             create = self._canvas.create_text(
                 0, self._tier_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._create_new_tier_list())
+
+    def _create_screenshot_button(self):
+        if self._tierlist_id:
+            screenshot = self._canvas.create_text(
+                0, self._tier_count + 150, anchor='w', text="Screenshot", font=('Arial', 20, 'bold'), fill='blue')
+
+            self._canvas.tag_bind(
+                screenshot, '<Button-1>', lambda e: self._handle_screenshot())
 
     def _on_drop(self, event):
         """Handle the event when an item is dropped."""
@@ -226,6 +231,9 @@ class TierListView:
             x, y = (i + 1) * 120, self._tier_count
 
             image_item = ItemHandler(self.service, path, x, y)
+
+            if image_item.photo_image is None:
+                break
 
             # Place the image on the canvas
             item_id = self._canvas.create_image(
@@ -273,6 +281,11 @@ class TierListView:
         # Return to list view
         self._handle_show_list_view()
 
+    def _handle_screenshot(self):
+        image_name = self.service.take_canvas_screenshot(self._canvas)
+        messagebox.showinfo(
+            'Screenshot', f'Image {image_name} saved to data/screenshots/')
+
     def _handle_name_input(self, max_len):
         while True:
             name = simpledialog.askstring(
@@ -305,13 +318,24 @@ class TierListView:
                 self._tiers[tier] = name
                 self._canvas.itemconfig(tier_id, text=name)
 
+
 class ItemHandler:
     def __init__(self, service, image_path, x, y):
-        self.photo_image = service.get_image(image_path)
+        self.photo_image = self.get_image(service, image_path)
         self.item_id = uuid.uuid4().int
         self.image_path = image_path
         self.x = x
         self.y = y
+
+    def get_image(self, service, image_path):
+        try:
+            return service.get_image(image_path)
+
+        except ValueError as ve:
+            messagebox.showerror("Format Error", str(ve))
+
+        except FileNotFoundError as ve:
+            messagebox.showerror("File Error", str(ve))
 
     def update_position(self, x, y):
         self.x = x

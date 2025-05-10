@@ -24,4 +24,8 @@
 |       |  1.5   | Dokumentaatio  |
 |       |  1   | Lisää testejä |
 |       |  2   | Tier nimien muokkaus lisätty, dokumentaatio, release |
-| yht       | 43    | |
+| 9.5.2025       |  2   | Käyttöliittymän laajennus  |
+|        |  2   | Kuvakaappaus ominaisuus  |
+| 10.5.2025       |  0.5   | Kuvakaappaus ominaisuus  |
+| 10.5.2025       |  1   | Virhekäsittelyn lisäilyä  |
+| yht       | 48.5    | |

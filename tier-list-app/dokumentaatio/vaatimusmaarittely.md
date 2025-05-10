@@ -15,7 +15,7 @@ Pystytään täyttämään tier listejä joko valmiista pohjista tai tehdä omia
     - [x] Tasojen määrän pystyy määrittelemään itse
     - [x] Asiat voi esittää kuvina
     - [ ] Asiat voi esittää tekstinä
-- [ ] Voi tallentaa kuvakaappauksen omasta tier lististä
+- [x] Voi tallentaa kuvakaappauksen omasta tier lististä
 - [x] Tier listejä voi poistaa
 
 ## Ennen viimeistä palautusta

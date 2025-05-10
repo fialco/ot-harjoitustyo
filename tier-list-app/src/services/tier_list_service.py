@@ -140,5 +140,15 @@ class TierListService:
 
         self.tier_list_repository.delete_tier_list(tierlist_id)
 
+    def take_canvas_screenshot(self, canvas):
+        """Creates a screenshot of the whole tier list.
+        Image is given a random name and saved to data/screenshots/.
+
+        Args:
+            canvas: TkInter canvas-object.
+        """
+
+        return self.image_repository.take_canvas_screenshot(canvas)
+
 
 tier_list_service = TierListService()
