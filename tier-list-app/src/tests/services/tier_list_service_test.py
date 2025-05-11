@@ -53,7 +53,7 @@ class FakeImageRepository:
 
     @staticmethod
     def get_base_dir_path():
-        pass
+        return '/home/user/ot-harjoitustyo/tier-list-app'
 
     @staticmethod
     def check_image_paths(image_paths):
@@ -163,3 +163,7 @@ class TestTierListService(unittest.TestCase):
         self.assertEqual(tiers[0].tierlist_id, 3)
         self.assertEqual(tiers[3].name, 'mid')
         self.assertEqual(tiers[3].rank, 3)
+
+    def test_get_base_dir_path(self):
+        base_path = self.service.get_base_dir_path()
+        self.assertEqual(base_path, '/home/user/ot-harjoitustyo/tier-list-app')

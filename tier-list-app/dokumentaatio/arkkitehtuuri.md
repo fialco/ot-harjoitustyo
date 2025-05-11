@@ -176,3 +176,13 @@ sequenceDiagram
 ```
 
 Painikkeiden painamisella kutsutaan delete_tier_list() metodia argumentteina tier listin id. Sitten kutsutaan `TierListRepositoryn` metodia joilla poistetaan samalla tier list ja siihen liittyvät asiat ja tasot tietokannasta. Lopulta UI piirtää listanäkymän elementit uudestaan ilman poistettua tier listiä.
+
+## Ohjelman puutteet
+
+### Käyttöliittymä
+
+Käyttöliittymän `TierListView` koodissa on jonkin verran toisteisuuttaa. Esimerkiksi itemien lisääminen eri tavoin (suoraan tietokannasta, teksti kuvaksi ja kuvan tiputtaminen) käyttää useassa kohdassa samaa koodia jonka olisi voinut keskittää.
+
+Tier listin tasot eivät dynaamisesti kasva kun itemeitä lisätään niille joten yhdelle tasolle mahtuu realistisesti vain 6 asiaa kerralla ilman päälekkäisyyksiä. Tästä syystä myöskään asioita ei tallenneta erikseen tietokantaan eri tasoille.
+
+Kun tekstistä tehdään kuva niin kuva tallennetaan [images](../data/images/)-hakemistoon heti eikä vasta kun tier list tallennetaan tietokantaan.

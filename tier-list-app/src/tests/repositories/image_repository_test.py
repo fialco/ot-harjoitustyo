@@ -50,3 +50,15 @@ class TestImageRepository(unittest.TestCase):
             image_repository.load_image(self.test_missing_path)
 
         root.destroy()
+
+    def test_text_to_image(self):
+        root = TkinterDnD.Tk()
+        root.withdraw()
+
+        image, target_path = image_repository.text_to_image('testing')
+
+        self.assertIsInstance(image, ImageTk.PhotoImage)
+        self.assertEqual(image.height(), 100)
+
+        root.destroy()
+
