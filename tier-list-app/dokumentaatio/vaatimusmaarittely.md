@@ -19,9 +19,9 @@ Pystytään täyttämään tier listejä joko valmiista pohjista tai tehdä omia
 - [x] Tier listejä voi poistaa
 
 ## Ennen viimeistä palautusta
-- [ ] Virhekäsittely oleellisissa paikoissa
+- [X] Virhekäsittely oleellisissa paikoissa
 - [ ] Dynaaminen tier koko item määrän mukaan
-- [ ] Rajoita tier nimen pituutta
+- [X] Rajoita tier nimen pituutta
 
 ## Mahdollisia lisäyksiä
 

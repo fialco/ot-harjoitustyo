@@ -29,4 +29,5 @@
 | 10.5.2025       |  0.5   | Kuvakaappaus ominaisuus  |
 |        |  1   | Virhekäsittelyn lisäilyä  |
 |        |  2   | Lisää testejä  |
-| yht       | 50.5    | |
+| 11.5.2025       |  2   | Dokumentaatio  |
+| yht       | 52.5    | |
