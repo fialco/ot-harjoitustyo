@@ -42,3 +42,4 @@ Sovelluksessa ei ole valmisteltu virheilmoituksia jos:
 
 - Konfiguraatiossa tarvittaviin tiedostoihin ei ole luku/kirjoitusoikeuksia
 - Jos tietokantaa ei ole alustettu, eli `python -m poetry run invoke build`-komentoa ei ole suoritettu
+- Syötteiden kokoja tarkastellaan käyttöliittymän puolella mutta ei tarkisteta uudelleen sovelluslogiikan puolella ja täten testit puuttuvat
