@@ -311,10 +311,14 @@ class TierListView:
 
     def _create_new_tier_list(self):
         image_paths = [item.image_path for key, item in self._item_map.items()]
-        self.service.create_tier_list_template(
-            self._tier_list_name, self._tiers, image_paths)
 
-        self._handle_show_list_view()
+        if image_paths != []:
+            self.service.create_tier_list_template(
+                self._tier_list_name, self._tiers, image_paths)
+
+            self._handle_show_list_view()
+        else:
+            messagebox.showerror('No items', 'Tier list cannot be created without items.')
 
     def _handle_screenshot(self):
         image_name = self.service.take_canvas_screenshot(

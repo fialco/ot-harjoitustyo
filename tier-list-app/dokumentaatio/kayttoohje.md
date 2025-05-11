@@ -52,6 +52,12 @@ Paluu takaisin listanäkymään tapahtuu "Back"-nappia painamalla.
 
 Uuden pohjan tekoon siirrytään listanäkymässä "New template"-painikkeella.
 
+Aluksi valitaan monta tasoa tier listiin halutaan.
+
+![](./kuvat/kayttoohje-taso-maara.png)
+
+Tämän jälkeen voi uutta pohjaa lähteä rakentamaan.
+
 ![](./kuvat/kayttoohje-uusi-pohja.png)
 
 Pohjan nimen voi valita klikkaamalla "Click here to name the tier list"-painiketta jolloin avautuu uusi ikkuna.
@@ -63,6 +69,10 @@ Tierien nimiä voi vaihtaa klikkaamalla nimeä ja kirjoittamalla uusi nimi tekst
 Kuvia pohjaan voi lisätä vetämällä ja tiputtamalla halutun kuvan tai kuvat "Drag image(s) here"-laatikoon.
 
 ![](./kuvat/kayttoohje-pohja-kuvat.png)
+
+Voi myös paintaa 'Add text image'-nappia jonka avulla voi luoda uusia kuvia antamastaan tekstistä.
+
+![](./kuvat/kayttoohje-teksti-kuvaksi.png)
 
 Valmis pohja tallennetaan "Create"-nappia painamalla ja on nyt valittavissa listanäkymässä.
 
@@ -77,3 +87,12 @@ Tier listin voi halutessaan poistaa painamalla punaista X nappia.
 Valmiina olevat pohjat saat takaisin komennolla `poetry run invoke build`.
 
 Kaikki tallennetut kuvat [images](../data/images/)-hakemistossa säilyvät.
+
+
+## Kuvankaappauksen ottaminen
+
+Kuvankaappauksen tier lististä saa painamalla 'Screenshot'-nappia.
+
+![](./kuvat/kayttoohje-kuvankaappaus.png)
+
+Kuvankaappaukset tallennetaan satunnaisella nimellä [screenshots](../data/screenshots/)-hakemistoon.

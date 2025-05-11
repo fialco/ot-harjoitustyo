@@ -29,9 +29,10 @@
 | 10.5.2025       |  0.5   | Kuvakaappaus ominaisuus  |
 |        |  1   | Virhekäsittelyn lisäilyä  |
 |        |  2   | Lisää testejä  |
-| 11.5.2025       |  2   | Dokumentaatio  |
+| 11.5.2025       |  2.5   | Dokumentaatio  |
 |        |   0.5  | Docstringien lisäys  |
 |        |   2  | Teksti kuvaksi ominaisuus  |
 |        |   0.5  | Lisää testejä  |
 |        |  1.5   | Käyttöliittymän laajennus  |
-| yht       | 57    | |
+|        |  0.5   | Refaktorointia  |
+| yht       | 58    | |

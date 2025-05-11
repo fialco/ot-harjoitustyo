@@ -64,6 +64,8 @@ class ListView:
         self._draw_items()
 
     def _draw_items(self):
+        self._list = self._service.get_tier_lists()
+
         self._canvas.delete('all')
 
         self._canvas.create_rectangle(0, 0, 800, 75,
