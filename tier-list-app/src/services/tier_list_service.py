@@ -108,6 +108,18 @@ class TierListService:
 
         return self.image_repository.load_image(image_path)
 
+    def text_to_image(self, text):
+        """Return a image of an text.
+
+        Args:
+            text: Value to be made an image.
+
+        Returns:
+            A PhotoImage-object.
+        """
+
+        return self.image_repository.text_to_image(text)
+
     def create_tier_list_template(self, name, tier_data, image_paths):
         """Creates a new tier list template.
         Item paths are checked and if they're not in /data/images,

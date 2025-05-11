@@ -1,8 +1,9 @@
 import io
 import secrets
 import os
+import textwrap
 from pathlib import Path
-from PIL import Image, ImageTk, ImageOps, UnidentifiedImageError
+from PIL import Image, ImageTk, ImageDraw, ImageFont, ImageOps, UnidentifiedImageError
 
 
 class ImageRepository:
@@ -27,9 +28,9 @@ class ImageRepository:
         """
 
         try:
-            img = Image.open(file_path)
-            img = img.resize((100, 100))
-            return ImageTk.PhotoImage(img)
+            image = Image.open(file_path)
+            image = image.resize((100, 100))
+            return ImageTk.PhotoImage(image)
 
         except UnidentifiedImageError as e:
             raise ValueError(
@@ -38,6 +39,50 @@ class ImageRepository:
         except FileNotFoundError as e:
             raise FileNotFoundError(
                 f'Image {os.path.basename(file_path)} missing from data/images/') from e
+
+    @staticmethod
+    def text_to_image(text):
+        """Creates an image from the text given.
+
+        Args:
+            text: Value to be made an image.
+
+        Returns:
+            A PhotoImage-object.
+        """
+
+        image = Image.new('RGB', (100, 100), color='black')
+        draw = ImageDraw.Draw(image)
+
+        try:
+            font = ImageFont.truetype("FreeSansBold.otf", 15)
+        except IOError:
+            font = ImageFont.load_default()
+
+        # Asked ChatGPT to write code for wrapping long text
+        max_chars_per_line = 10
+        lines = textwrap.wrap(text, width=max_chars_per_line)
+
+        line_height = font.getbbox('A')[3] - font.getbbox('A')[1] + 2
+        total_text_height = line_height * len(lines)
+
+        y = (100 - total_text_height) // 2
+
+        for line in lines:
+            line_width = draw.textlength(line, font=font)
+            x = (100 - line_width) // 2
+            draw.text((x, y), line, fill='white', font=font)
+            y += line_height
+        # Generated code ends
+
+        target_dir = Path('services/../data/images').resolve()
+
+        image_name = f'{text}_{secrets.token_hex(8)}.png'
+        target_path = target_dir / image_name
+
+        image.save(target_path)
+
+        return ImageTk.PhotoImage(image), target_path
 
     @staticmethod
     def get_base_dir_path():

@@ -31,4 +31,5 @@
 |        |  2   | Lisää testejä  |
 | 11.5.2025       |  2   | Dokumentaatio  |
 |        |   0.5  | Docstringien lisäys  |
-| yht       | 53    | |
+|        |   2  | Teksti kuvaksi ominaisuus  |
+| yht       | 55    | |

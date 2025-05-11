@@ -33,3 +33,10 @@ Viikolla keskitytty käyttöliittymän rakentamiseen ja kuvien lisäämiseen.
 - Mahdollisuus tier listien poistoon tietokannasta käyttöliittymän kautta
 - Tierien nimet voi itse määrittää
 - Poistettu suora viittaus repositorioon käyttöliittymästä. Riippuvuus nyt vain serviceen.
+
+## Viikko 7
+
+- Lisätty virhekäsittelyä oleellisiin paikkoihin
+- Tier listin tasojen määrän voi valita uutta pohjaa luodessa
+- Lisätty kuvankaappaus ominaisuus
+- Lisätty teksti kuvaksi ominaisuus

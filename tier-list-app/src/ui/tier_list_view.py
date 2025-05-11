@@ -54,6 +54,7 @@ class TierListView:
         self._create_back_button()
         self._create_create_button()
         self._create_screenshot_button()
+        self._create_text_to_image_button()
 
         scrollbar = ttk.Scrollbar(self._frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -152,7 +153,7 @@ class TierListView:
 
             image_path = base_dir + item.image_path
 
-            image_item = ItemHandler(self.service, image_path, x, y)
+            image_item = ItemHandler(self.service, x, y, image_path=image_path)
 
             item_id = self._canvas.create_image(
                 x, y, image=image_item.photo_image)
@@ -209,6 +210,14 @@ class TierListView:
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._create_new_tier_list())
 
+    def _create_text_to_image_button(self):
+        if not self._tierlist_id:
+            create = self._canvas.create_text(
+                500, self._tier_count+130, anchor='w', text="Add text image", font=('Arial', 20, 'bold'), fill='blue')
+
+            self._canvas.tag_bind(
+                create, '<Button-1>', lambda e: self._handle_text_to_image())
+
     def _create_screenshot_button(self):
         if self._tierlist_id:
             screenshot = self._canvas.create_text(
@@ -229,7 +238,7 @@ class TierListView:
 
             x, y = (i + 1) * 120, self._tier_count
 
-            image_item = ItemHandler(self.service, path, x, y)
+            image_item = ItemHandler(self.service, x, y, image_path=path)
 
             if image_item.photo_image is None:
                 break
@@ -267,9 +276,9 @@ class TierListView:
         self._canvas.coords(item_id, snapped_item.x, snapped_item.y)
 
     def _create_new_tier_list(self):
-        items = [item.image_path for key, item in self._item_map.items()]
+        image_paths = [item.image_path for key, item in self._item_map.items()]
         self.service.create_tier_list_template(
-            self._tier_list_name, self._tiers, items)
+            self._tier_list_name, self._tiers, image_paths)
 
         self._handle_show_list_view()
 
@@ -277,6 +286,34 @@ class TierListView:
         image_name = self.service.take_canvas_screenshot(self._canvas)
         messagebox.showinfo(
             'Screenshot', f'Image {image_name} saved to data/screenshots/')
+
+    def _handle_text_to_image(self):
+        while True:
+            text = simpledialog.askstring(
+                title='Text to image', prompt='Input text (max 55 characters):', parent=self._root)
+
+            if text is None:
+                break
+
+            if 1 <= len(text) <= 55:
+                x, y = 700, 700
+
+                image_item = ItemHandler(self.service, x, y, text=text)
+
+                item_id = self._canvas.create_image(
+                    x, y, image=image_item.photo_image)
+                self._canvas.image = image_item.photo_image
+
+                self._item_map[item_id] = image_item
+
+                self._canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
+                                      id=item_id: self._on_drag(e, id))
+                self._canvas.tag_bind(
+                    item_id, '<ButtonRelease-1>', self._on_drop_item)
+
+                break
+
+            messagebox.showerror('Invalid Input', 'Please enter a valid text.')
 
     def _handle_name_input(self, max_len):
         while True:
@@ -314,25 +351,33 @@ class TierListView:
 class ItemHandler:
     """Class, which handles items on tier list."""
 
-    def __init__(self, service, image_path, x, y):
+    def __init__(self, service, x, y, image_path=None, text=None):
         """Class constructor. Creates a new item.
 
         Args:
             service:
                 TierListService-object used for loading an image.
-            image_path:
-                Absolute path of the image.
             x:
                 x coordinate of the item on a window
             y:
                 t coordinate of the item on a window
+            image_path:
+                Optional, Absolute path of the image.
+            text:
+                Optional, Value to be made an image.
+
         """
 
-        self.photo_image = self.get_image(service, image_path)
+        if image_path:
+            self.photo_image = self.get_image(service, image_path)
+            self.image_path = image_path
+        elif text:
+            self.photo_image, self.image_path = service.text_to_image(text)
+
         self.item_id = uuid.uuid4().int
-        self.image_path = image_path
         self.x = x
         self.y = y
+        self.text = text
 
     def get_image(self, service, image_path):
         """Handles image loading.
