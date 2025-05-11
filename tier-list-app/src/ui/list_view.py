@@ -56,7 +56,6 @@ class ListView:
         scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-
         self._canvas.config(yscrollcommand=scrollbar.set)
         self._canvas.config(scrollregion=self._canvas.bbox("all"))
 
