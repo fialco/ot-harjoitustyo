@@ -46,10 +46,10 @@ class TierListView:
 
         self._draw_tiers()
 
-        self._create_drag_drop_area()
-
         if self._tierlist_id is not None:
             self._draw_items()
+
+        self._create_drag_drop_area()
 
         self._create_back_button()
         self._create_create_button()
@@ -89,6 +89,7 @@ class TierListView:
 
     def _init_tier_list_data(self):
         self._tier_list_name = 'Click here to name the tier list'
+        self.item_rows = 1
 
         if not self._tierlist_id:
             count = self._ask_tier_count()
@@ -107,9 +108,18 @@ class TierListView:
             for tier in tier_data:
                 self._tiers[tier.rank] = tier.name
 
+            self._items = self.service.get_items_of_tier_list(
+                self._tierlist_id)
+            self.item_rows = (len(self._items) // 6)+1
+
+        self._tier_end = (len(self._tiers)*100)+52
+
         self.tier_positions = [(i+1)*100 for i in range(len(self._tiers))]
-        self.tier_positions.append((len(self._tiers)+1)*100)
-        self._tier_count = (len(self._tiers)+1)*100
+
+        for i in range(self.item_rows):
+            self.tier_positions.append((len(self._tiers)+i+1)*100)
+
+        self._row_count = (len(self._tiers)+self.item_rows)*100
 
     def _draw_tiers(self):
         """Draw the tiers on the canvas."""
@@ -137,19 +147,22 @@ class TierListView:
                 self._canvas.tag_bind(
                     tier_id, '<Button-1>', lambda e, tier=tier: self._change_tier_name(tier))
 
-        self._canvas.create_rectangle(0, self._tier_count - self.tier_height // 2,
-                                      800, self._tier_count +
+        self._canvas.create_rectangle(0, self.tier_positions[-self.item_rows] - self.tier_height // 2,
+                                      800, self._row_count +
                                       self.tier_height // 2,
                                       outline='black', width=2, fill='gray80')
 
     def _draw_items(self):
-        items = self.service.get_items_of_tier_list(
-            self._tierlist_id)
-
         base_dir = self.service.get_base_dir_path()
 
-        for i, item in enumerate(items):
-            x, y = (i + 1) * 120, self._tier_count
+        column = 0
+        for i, item in enumerate(self._items):
+            if i % 6 != 0:
+                column += 1
+            else:
+                column = 0
+
+            x, y = (column + 1) * 120, self.tier_positions[-(i // 6 + 1)]
 
             image_path = base_dir + item.image_path
 
@@ -179,7 +192,7 @@ class TierListView:
             self.dnd_area = ttk.Frame(self._canvas)
 
             self._canvas.create_window(
-                400, self._tier_count+100, anchor="n", window=self.dnd_area)
+                400, self._row_count+100, anchor="n", window=self.dnd_area)
 
             self.drop_label = tk.Label(self.dnd_area, text='Drag image(s) here',
                                        width=20, height=3, bg='green')
@@ -197,7 +210,7 @@ class TierListView:
 
     def _create_back_button(self):
         back = self._canvas.create_text(
-            0, self._tier_count + 100, anchor='w', text="Back", font=('Arial', 20, 'bold'), fill='blue')
+            0, self._row_count + 100, anchor='w', text="Back", font=('Arial', 20, 'bold'), fill='blue')
 
         self._canvas.tag_bind(
             back, '<Button-1>', lambda e: self._handle_show_list_view())
@@ -205,7 +218,7 @@ class TierListView:
     def _create_create_button(self):
         if not self._tierlist_id:
             create = self._canvas.create_text(
-                0, self._tier_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
+                0, self._row_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._create_new_tier_list())
@@ -213,7 +226,7 @@ class TierListView:
     def _create_text_to_image_button(self):
         if not self._tierlist_id:
             create = self._canvas.create_text(
-                500, self._tier_count+130, anchor='w', text="Add text image", font=('Arial', 20, 'bold'), fill='blue')
+                500, self._row_count+130, anchor='w', text="Add text image", font=('Arial', 20, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._handle_text_to_image())
@@ -221,7 +234,7 @@ class TierListView:
     def _create_screenshot_button(self):
         if self._tierlist_id:
             screenshot = self._canvas.create_text(
-                0, self._tier_count + 150, anchor='w', text="Screenshot", font=('Arial', 20, 'bold'), fill='blue')
+                0, self._row_count + 150, anchor='w', text="Screenshot", font=('Arial', 20, 'bold'), fill='blue')
 
             self._canvas.tag_bind(
                 screenshot, '<Button-1>', lambda e: self._handle_screenshot())
@@ -231,12 +244,12 @@ class TierListView:
         How to handle multiple images https://stackoverflow.com/a/77834313."""
 
         for i, path in enumerate(self._root.tk.splitlist(event.data)):
-
             if i == 5:
-                print('For now max 5 items dropped at the same time supported')
+                messagebox.showerror(
+                    'Items', 'For now max 5 items dropped at the same time supported')
                 break
 
-            x, y = (i + 1) * 120, self._tier_count
+            x, y = (i + 1) * 120, self._row_count
 
             image_item = ItemHandler(self.service, x, y, image_path=path)
 
@@ -283,7 +296,8 @@ class TierListView:
         self._handle_show_list_view()
 
     def _handle_screenshot(self):
-        image_name = self.service.take_canvas_screenshot(self._canvas)
+        image_name = self.service.take_canvas_screenshot(
+            self._canvas, self._tier_end)
         messagebox.showinfo(
             'Screenshot', f'Image {image_name} saved to data/screenshots/')
 

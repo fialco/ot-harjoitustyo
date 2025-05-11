@@ -33,4 +33,5 @@
 |        |   0.5  | Docstringien lisäys  |
 |        |   2  | Teksti kuvaksi ominaisuus  |
 |        |   0.5  | Lisää testejä  |
-| yht       | 55.5    | |
+|        |  1.5   | Käyttöliittymän laajennus  |
+| yht       | 57    | |

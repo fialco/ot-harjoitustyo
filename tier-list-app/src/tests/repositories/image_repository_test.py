@@ -1,7 +1,7 @@
 import unittest
-from repositories.image_repository import image_repository
 from PIL import ImageTk
 from tkinterdnd2 import TkinterDnD
+from repositories.image_repository import image_repository
 
 
 class TestImageRepository(unittest.TestCase):

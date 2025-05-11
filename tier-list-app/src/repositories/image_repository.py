@@ -77,9 +77,7 @@ class ImageRepository:
 
         target_dir = Path('services/../data/images').resolve()
 
-        text = text.replace(" ", "_")
-
-        image_name = f'{text}_{secrets.token_hex(8)}.png'
+        image_name = f'{text.replace(" ", "_")}_{secrets.token_hex(8)}.png'
         target_path = target_dir / image_name
 
         image.save(target_path)
@@ -133,12 +131,15 @@ class ImageRepository:
         return new_paths
 
     @staticmethod
-    def take_canvas_screenshot(canvas):
+    def take_canvas_screenshot(canvas, tier_end):
         """Creates a screenshot of the whole tier list.
         Image is given a random name and saved to data/screenshots/.
 
         Args:
-            canvas: TkInter canvas-object.
+            canvas:
+                TkInter canvas-object.
+            tier_end:
+                y coordinate for end of tiers
 
         Returns:
             Image name for confirmation.
@@ -147,9 +148,9 @@ class ImageRepository:
         data = canvas.postscript(colormode='color',
                                  x=0, y=0,
                                  width=canvas.bbox("all")[2],
-                                 height=canvas.bbox("all")[3],
+                                 height=tier_end,
                                  pagewidth=canvas.bbox("all")[2],
-                                 pageheight=canvas.bbox("all")[3])
+                                 pageheight=tier_end)
 
         image = Image.open(io.BytesIO(data.encode('utf-8')))
         image = ImageOps.expand(image, border=2, fill='white')
