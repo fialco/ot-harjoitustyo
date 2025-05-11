@@ -29,6 +29,8 @@ class ListView:
         self._canvas = tk.Canvas(self.frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        self._list = self._service.get_tier_lists()
+
         self._initialize()
 
     def pack(self):
@@ -44,7 +46,7 @@ class ListView:
 
     def _delete_button_click(self, tier_list):
         if messagebox.askyesno(title='Delete tier list?',
-                               message=f'Are you sure you want to delete tier list {tier_list.name}?'):
+            message=f'Are you sure you want to delete tier list {tier_list.name}?'):
 
             self._service.delete_tier_list(tier_list.id)
             self._draw_items()
@@ -63,7 +65,6 @@ class ListView:
 
     def _draw_items(self):
         self._canvas.delete('all')
-        self._list = self._service.get_tier_lists()
 
         self._canvas.create_rectangle(0, 0, 800, 75,
                                       outline='black', width=2, fill='SpringGreen2')
@@ -74,7 +75,7 @@ class ListView:
         self._canvas.tag_bind(
             new, '<Button-1>', lambda e: self._new_button_click())
 
-        for i in range(len(self._list)):
+        for i, _ in enumerate(self._list):
             y_position = (i+2) * 50
             self._canvas.create_rectangle(0, y_position-25, 800, y_position + 25,
                                           outline='black', width=2, fill='azure')

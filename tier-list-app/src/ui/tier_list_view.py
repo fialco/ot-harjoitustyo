@@ -1,7 +1,7 @@
 import tkinter as tk
 import uuid
 from tkinter import ttk, simpledialog, messagebox
-from tkinterdnd2 import TkinterDnD, DND_FILES
+from tkinterdnd2 import DND_FILES
 
 from services.tier_list_service import TierListService
 
@@ -19,7 +19,8 @@ class TierListView:
             handle_show_list_view:
                 Is called when we want go get back to list view.
             tierlist_id:
-                Has value None if 'New template' picked, otherwise it's the id of the tier list being chosen.
+                Has value None if 'New template' picked,
+                otherwise it's the id of the tier list being chosen.
         """
 
         self._root = root
@@ -42,8 +43,8 @@ class TierListView:
         self._item_map = {}
         self._tier_map = {}
 
+        self._tier_list_name = 'Click here to name the tier list'
         self._init_tier_list_data()
-
         self._draw_tiers()
 
         if self._tierlist_id is not None:
@@ -76,20 +77,20 @@ class TierListView:
 
         while True:
             count = simpledialog.askinteger(
-                title='Tier count', prompt=f'How many tiers from {min_count} to {max_count}?', parent=self._frame)
+                title='Tier count', prompt=f'How many tiers from {min_count} to {max_count}?',
+                parent=self._frame)
 
             if count is None:
                 continue
 
-            elif min_count <= count <= max_count:
+            if min_count <= count <= max_count:
                 return count
 
             messagebox.showerror(
                 'Invalid Input', 'Please enter a valid integer.')
 
     def _init_tier_list_data(self):
-        self._tier_list_name = 'Click here to name the tier list'
-        self.item_rows = 1
+        self._item_rows = 1
 
         if not self._tierlist_id:
             count = self._ask_tier_count()
@@ -110,16 +111,16 @@ class TierListView:
 
             self._items = self.service.get_items_of_tier_list(
                 self._tierlist_id)
-            self.item_rows = (len(self._items) // 6)+1
+            self._item_rows = (len(self._items) // 6)+1
 
         self._tier_end = (len(self._tiers)*100)+52
 
         self.tier_positions = [(i+1)*100 for i in range(len(self._tiers))]
 
-        for i in range(self.item_rows):
+        for i in range(self._item_rows):
             self.tier_positions.append((len(self._tiers)+i+1)*100)
 
-        self._row_count = (len(self._tiers)+self.item_rows)*100
+        self._row_count = (len(self._tiers)+self._item_rows)*100
 
     def _draw_tiers(self):
         """Draw the tiers on the canvas."""
@@ -138,8 +139,11 @@ class TierListView:
                                           self.tier_height // 2,
                                           outline='black', width=2, fill='azure')
 
-            tier_id = self._canvas.create_text(10, self.tier_positions[rank], anchor='w', text=f"{tier}",
-                                               font=('Arial', 16, 'bold'), width=100)
+            tier_id = self._canvas.create_text(10, self.tier_positions[rank],
+                                               anchor='w',
+                                               text=f"{tier}",
+                                               font=('Arial', 16, 'bold'),
+                                               width=100)
 
             self._tier_map[tier_id] = rank
 
@@ -147,7 +151,8 @@ class TierListView:
                 self._canvas.tag_bind(
                     tier_id, '<Button-1>', lambda e, tier=tier: self._change_tier_name(tier))
 
-        self._canvas.create_rectangle(0, self.tier_positions[-self.item_rows] - self.tier_height // 2,
+        self._canvas.create_rectangle(0,
+                                      self.tier_positions[-self._item_rows] - self.tier_height // 2,
                                       800, self._row_count +
                                       self.tier_height // 2,
                                       outline='black', width=2, fill='gray80')
@@ -179,10 +184,10 @@ class TierListView:
             self._canvas.tag_bind(
                 item_id, '<ButtonRelease-1>', self._on_drop_item)
 
-    def _on_hover(self, event):
+    def _on_hover(self, _):
         self.drop_label.config(bg='yellow')
 
-    def _on_leave(self, event):
+    def _on_leave(self, _):
         self.drop_label.config(bg='green')
 
     def _create_drag_drop_area(self):
@@ -210,7 +215,11 @@ class TierListView:
 
     def _create_back_button(self):
         back = self._canvas.create_text(
-            0, self._row_count + 100, anchor='w', text="Back", font=('Arial', 20, 'bold'), fill='blue')
+            0, self._row_count + 100,
+            anchor='w',
+            text="Back",
+            font=('Arial', 20, 'bold'),
+            fill='blue')
 
         self._canvas.tag_bind(
             back, '<Button-1>', lambda e: self._handle_show_list_view())
@@ -218,7 +227,11 @@ class TierListView:
     def _create_create_button(self):
         if not self._tierlist_id:
             create = self._canvas.create_text(
-                0, self._row_count + 150, anchor='w', text="Create", font=('Arial', 20, 'bold'), fill='blue')
+                0, self._row_count + 150,
+                anchor='w',
+                text="Create",
+                font=('Arial', 20, 'bold'),
+                fill='blue')
 
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._create_new_tier_list())
@@ -226,7 +239,11 @@ class TierListView:
     def _create_text_to_image_button(self):
         if not self._tierlist_id:
             create = self._canvas.create_text(
-                500, self._row_count+130, anchor='w', text="Add text image", font=('Arial', 20, 'bold'), fill='blue')
+                500, self._row_count+130,
+                anchor='w',
+                text="Add text image",
+                font=('Arial', 20, 'bold'),
+                fill='blue')
 
             self._canvas.tag_bind(
                 create, '<Button-1>', lambda e: self._handle_text_to_image())
@@ -234,7 +251,11 @@ class TierListView:
     def _create_screenshot_button(self):
         if self._tierlist_id:
             screenshot = self._canvas.create_text(
-                0, self._row_count + 150, anchor='w', text="Screenshot", font=('Arial', 20, 'bold'), fill='blue')
+                0, self._row_count + 150,
+                anchor='w',
+                text="Screenshot",
+                font=('Arial', 20, 'bold'),
+                fill='blue')
 
             self._canvas.tag_bind(
                 screenshot, '<Button-1>', lambda e: self._handle_screenshot())
@@ -332,10 +353,12 @@ class TierListView:
     def _handle_name_input(self, max_len):
         while True:
             name = simpledialog.askstring(
-                title='Tier name', prompt=f'Input a name (max {max_len} characters):', parent=self._root)
+                title='Tier name',
+                prompt=f'Input a name (max {max_len} characters):',
+                parent=self._root)
 
             if name is None:
-                break
+                return None
 
             if 1 <= len(name) <= max_len:
                 return name
@@ -411,9 +434,11 @@ class ItemHandler:
 
         except ValueError as ve:
             messagebox.showerror("Format Error", str(ve))
+            return None
 
         except FileNotFoundError as ve:
             messagebox.showerror("File Error", str(ve))
+            return None
 
     def update_position(self, x, y):
         """Updates items coordinates.

@@ -40,3 +40,4 @@ Viikolla keskitytty käyttöliittymän rakentamiseen ja kuvien lisäämiseen.
 - Tier listin tasojen määrän voi valita uutta pohjaa luodessa
 - Lisätty kuvankaappaus ominaisuus
 - Lisätty teksti kuvaksi ominaisuus
+- Kaikki tier listin asiat ladotaan ruudulle näkyviin jos asioita paljon
