@@ -77,6 +77,8 @@ class ImageRepository:
 
         target_dir = Path('services/../data/images').resolve()
 
+        text = text.replace(" ", "_")
+
         image_name = f'{text}_{secrets.token_hex(8)}.png'
         target_path = target_dir / image_name
 
