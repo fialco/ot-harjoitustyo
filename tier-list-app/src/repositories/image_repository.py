@@ -18,6 +18,12 @@ class ImageRepository:
 
         Returns:
             A PhotoImage-object.
+
+        Raises:
+            UnidentifiedImageError:
+                Error, when the format of the file/image not supported
+            FileNotFoundError:
+                Error, when image missing from data/images/
         """
 
         try:

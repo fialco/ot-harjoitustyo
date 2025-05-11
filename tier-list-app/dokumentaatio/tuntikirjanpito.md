@@ -30,4 +30,5 @@
 |        |  1   | Virhekäsittelyn lisäilyä  |
 |        |  2   | Lisää testejä  |
 | 11.5.2025       |  2   | Dokumentaatio  |
-| yht       | 52.5    | |
+|        |   0.5  | Docstringien lisäys  |
+| yht       | 53    | |

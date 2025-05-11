@@ -7,7 +7,21 @@ from services.tier_list_service import TierListService
 
 
 class TierListView:
+    """View, which handles new and already made tier list templates.
+    """
+
     def __init__(self, root, handle_show_list_view, tierlist_id):
+        """Class constructor. Creates the tier list view.
+
+        Args:
+            root:
+                TKinterDND-element, into which the user interface is initialized.
+            handle_show_list_view:
+                Is called when we want go get back to list view.
+            tierlist_id:
+                Has value None if 'New template' picked, otherwise it's the id of the tier list being chosen.
+        """
+
         self._root = root
 
         self.service = TierListService()
@@ -19,25 +33,23 @@ class TierListView:
         self._frame = tk.Frame(self._root)
         self._frame.pack(fill=tk.BOTH, expand=True)
 
-        # Canvas for items and tiers
         self._canvas = tk.Canvas(
             self._frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.tier_height = 100
 
-        # Dict to store item ids and items
         self._item_map = {}
         self._tier_map = {}
 
         self._init_tier_list_data()
 
-        # Draw tiers on the canvas
         self._draw_tiers()
 
         self._create_drag_drop_area()
 
-        self._draw_items()
+        if self._tierlist_id is not None:
+            self._draw_items()
 
         self._create_back_button()
         self._create_create_button()
@@ -46,9 +58,7 @@ class TierListView:
         scrollbar = ttk.Scrollbar(self._frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Config canvast to use the scrollbar
         self._canvas.config(yscrollcommand=scrollbar.set)
-
         self._canvas.config(scrollregion=self._canvas.bbox("all"))
 
     def pack(self):
@@ -111,7 +121,6 @@ class TierListView:
         self._canvas.tag_bind(
             self.canvas_tier_list_name, '<Button-1>', lambda e: self._change_tier_list_name())
 
-        # Adds the amount of tiers given
         for rank, tier in self._tiers.items():
             self._canvas.create_rectangle(0, self.tier_positions[rank] - self.tier_height // 2,
                                           800, self.tier_positions[rank] +
@@ -127,7 +136,6 @@ class TierListView:
                 self._canvas.tag_bind(
                     tier_id, '<Button-1>', lambda e, tier=tier: self._change_tier_name(tier))
 
-        # Add container for unpicked items
         self._canvas.create_rectangle(0, self._tier_count - self.tier_height // 2,
                                       800, self._tier_count +
                                       self.tier_height // 2,
@@ -140,29 +148,22 @@ class TierListView:
         base_dir = self.service.get_base_dir_path()
 
         for i, item in enumerate(items):
-            # Position where the items will be placed
             x, y = (i + 1) * 120, self._tier_count
 
             image_path = base_dir + item.image_path
 
-            # Add the image item
             image_item = ItemHandler(self.service, image_path, x, y)
 
-            # Place the image on the canvas
             item_id = self._canvas.create_image(
                 x, y, image=image_item.photo_image)
             self._canvas.image = image_item.photo_image
 
-            # Store the image_item
             self._item_map[item_id] = image_item
 
-            # Bind drag movement event
             self._canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
                                   id=item_id: self._on_drag(e, id))
             self._canvas.tag_bind(
                 item_id, '<ButtonRelease-1>', self._on_drop_item)
-
-    # Change dropzone color with mouse hover
 
     def _on_hover(self, event):
         self.drop_label.config(bg='yellow')
@@ -184,7 +185,6 @@ class TierListView:
 
             self.drop_label.grid(row=0, column=0)
 
-            # Register the drop area for drag and drop
             self.dnd_area.drop_target_register(DND_FILES)
             self.dnd_area.dnd_bind('<<Drop>>', self._on_drop)
 
@@ -218,16 +218,15 @@ class TierListView:
                 screenshot, '<Button-1>', lambda e: self._handle_screenshot())
 
     def _on_drop(self, event):
-        """Handle the event when an item is dropped."""
+        """Handle the event when an item is dropped.
+        How to handle multiple images https://stackoverflow.com/a/77834313."""
 
-        # How to handle multiple images https://stackoverflow.com/a/77834313
         for i, path in enumerate(self._root.tk.splitlist(event.data)):
 
             if i == 5:
                 print('For now max 5 items dropped at the same time supported')
                 break
 
-            # Position where the items will be placed
             x, y = (i + 1) * 120, self._tier_count
 
             image_item = ItemHandler(self.service, path, x, y)
@@ -235,15 +234,12 @@ class TierListView:
             if image_item.photo_image is None:
                 break
 
-            # Place the image on the canvas
             item_id = self._canvas.create_image(
                 x, y, image=image_item.photo_image)
             self._canvas.image = image_item.photo_image
 
-            # Store the image_item
             self._item_map[item_id] = image_item
 
-            # Bind drag movement event
             self._canvas.tag_bind(item_id, '<B1-Motion>', lambda e,
                                   id=item_id: self._on_drag(e, id))
             self._canvas.tag_bind(
@@ -261,24 +257,20 @@ class TierListView:
         x = self._canvas.canvasx(event.x)
         y = self._canvas.canvasy(event.y)
 
-        # From https://stackoverflow.com/a/7604311
         item_id = self._canvas.find_withtag("current")[0]
 
         item = self._item_map.get(item_id)
 
-        # Find the closest tier to the current Y position
         snapped_item = item.snap_item_to_tier(
             item, self.tier_positions, x, y)
 
         self._canvas.coords(item_id, snapped_item.x, snapped_item.y)
 
     def _create_new_tier_list(self):
-        # Creates a list of image paths
         items = [item.image_path for key, item in self._item_map.items()]
         self.service.create_tier_list_template(
             self._tier_list_name, self._tiers, items)
 
-        # Return to list view
         self._handle_show_list_view()
 
     def _handle_screenshot(self):
@@ -320,7 +312,22 @@ class TierListView:
 
 
 class ItemHandler:
+    """Class, which handles items on tier list."""
+
     def __init__(self, service, image_path, x, y):
+        """Class constructor. Creates a new item.
+
+        Args:
+            service:
+                TierListService-object used for loading an image.
+            image_path:
+                Absolute path of the image.
+            x:
+                x coordinate of the item on a window
+            y:
+                t coordinate of the item on a window
+        """
+
         self.photo_image = self.get_image(service, image_path)
         self.item_id = uuid.uuid4().int
         self.image_path = image_path
@@ -328,6 +335,18 @@ class ItemHandler:
         self.y = y
 
     def get_image(self, service, image_path):
+        """Handles image loading.
+
+        Args:
+            service:
+                TierListService-object used for loading an image.
+            image_path:
+                Absolute path of the image.
+
+        Returns:
+            image-item
+        """
+
         try:
             return service.get_image(image_path)
 
@@ -338,17 +357,38 @@ class ItemHandler:
             messagebox.showerror("File Error", str(ve))
 
     def update_position(self, x, y):
+        """Updates items coordinates.
+
+        Args:
+            x:
+                x coordinate of the item on a window
+            y:
+                t coordinate of the item on a window
+        """
+
         self.x = x
         self.y = y
 
     def snap_item_to_tier(self, item, tier_positions, event_x, event_y):
-        """Snap the item to the closest tier."""
+        """Snap the item to the closest tier.
+        Finding the shortest distance
+        https://medium.com/@zzysjtu/python-min-function-a-deep-dive-f72cbd771872
 
-        # Finding the shortest distance
-        # https://medium.com/@zzysjtu/python-min-function-a-deep-dive-f72cbd771872
+        Args:
+            item:
+                Item to be snapped to tier.
+            tier_positions:
+                Coordinates where the item should be snapped.
+            event_x:
+                Current x coordinate of the item.
+            event_y:
+                Current y coordinate of the item.
+
+        Returns:
+            Item with updated coordinates
+        """
         closest_tier = min(tier_positions, key=lambda y: abs(event_y - y))
 
-        # Check if inbounds of window in x axis
         event_x = max(50, min(event_x, 750))
 
         item.update_position(event_x, closest_tier)

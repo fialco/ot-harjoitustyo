@@ -5,7 +5,19 @@ from services.tier_list_service import TierListService
 
 
 class ListView:
+    """View, which handles all listed tier lists.
+    """
+
     def __init__(self, root, handle_show_tier_list_view):
+        """Class constructor. Creates the tier list view.
+
+        Args:
+            root:
+                TKinterDND-element, into which the user interface is initialized.
+            handle_show_tier_list_view:
+                Is called when we want go to tier list view.
+        """
+
         self._root = root
         self._service = TierListService()
 
@@ -14,7 +26,6 @@ class ListView:
         self.frame = tk.Frame(self._root)
         self.frame.pack(fill=tk.BOTH, expand=True)
 
-        # Canvas for items and tiers
         self._canvas = tk.Canvas(self.frame, bg="snow2", height=900, width=800)
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -45,9 +56,8 @@ class ListView:
         scrollbar = ttk.Scrollbar(self.frame, command=self._canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Config canvast to use the scrollbar
-        self._canvas.config(yscrollcommand=scrollbar.set)
 
+        self._canvas.config(yscrollcommand=scrollbar.set)
         self._canvas.config(scrollregion=self._canvas.bbox("all"))
 
         self._draw_items()
@@ -56,7 +66,6 @@ class ListView:
         self._canvas.delete('all')
         self._list = self._service.get_tier_lists()
 
-        # New template box and button
         self._canvas.create_rectangle(0, 0, 800, 75,
                                       outline='black', width=2, fill='SpringGreen2')
 
